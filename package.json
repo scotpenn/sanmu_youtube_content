@@ -1,0 +1,17 @@
+{
+  "name": "sanmu-youtube-dashboard",
+  "version": "1.0.0",
+  "description": "三木有话说 - 内容管理系统",
+  "main": "index.html",
+  "scripts": {
+    "dev": "python3 -m http.server 8000",
+    "start": "serve .",
+    "build": "echo 'No build step required for static site'"
+  },
+  "keywords": ["dashboard", "content-management", "static-site"],
+  "author": "Sanmu",
+  "license": "MIT",
+  "devDependencies": {
+    "serve": "^14.2.1"
+  }
+}

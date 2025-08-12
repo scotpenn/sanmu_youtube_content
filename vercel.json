@@ -1,4 +1,12 @@
 {
+  "functions": {
+    "api/auth.js": {
+      "runtime": "nodejs18.x"
+    },
+    "api/config.js": {
+      "runtime": "nodejs18.x"
+    }
+  },
   "cleanUrls": true,
   "trailingSlash": false,
   "headers": [
@@ -22,8 +30,8 @@
   ],
   "rewrites": [
     {
-      "source": "/",
-      "destination": "/index.html"
+      "source": "/api/(.*)",
+      "destination": "/api/$1"
     }
   ]
 }
