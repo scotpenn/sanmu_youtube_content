@@ -94,34 +94,9 @@
 
         <main class="container mx-auto px-6 pb-20">
             
-            <section id="strategy-core" class="mb-16">
-                <div class="text-center mb-10">
-                    <h2 class="text-2xl md:text-3xl font-bold section-title">第一步：战略核心转型</h2>
-                    <p class="mt-2 text-gray-500">从“殡葬故事分享”到“青年生命解惑中心”的价值升维</p>
-                </div>
-                <div class="grid md:grid-cols-2 gap-8 items-center bg-white p-8 rounded-2xl shadow-sm">
-                    <div class="border-r-0 md:border-r md:pr-8 border-gray-200">
-                        <h3 class="text-xl font-bold text-red-700 mb-3">旧定位：增长瓶颈</h3>
-                        <p class="text-gray-600 mb-4">内容被动地被“殡葬师”标签定义，吸引的观众年龄层偏高（40岁+），虽然忠诚但基数有限，互动率低。视频停留在“我经历的一个故事”，缺乏与年轻观众的深度价值连接。</p>
-                        <div class="flex items-center text-red-500">
-                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"></path></svg>
-                            <span>价值主张与目标观众错位</span>
-                        </div>
-                    </div>
-                    <div class="mt-6 md:mt-0">
-                        <h3 class="text-xl font-bold text-green-700 mb-3">新定位：增长引擎</h3>
-                        <p class="text-gray-600 mb-4">主动利用“殡葬师”的终局视角，为年轻的“存在主义焦虑者”和“高压生活者”提供稀缺的“情绪价值”和“人生解惑”。将每一个故事，都升华为解决一个具体生活困惑的答案。</p>
-                        <div class="flex items-center text-green-600">
-                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                            <span>成为青年社群的“人生引路人”</span>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
             <section id="pillars" class="mb-16">
                 <div class="text-center mb-10">
-                    <h2 class="text-2xl md:text-3xl font-bold section-title">第二步：聚焦三大内容支柱</h2>
+                    <h2 class="text-2xl md:text-3xl font-bold section-title">第一部分：聚焦三大内容支柱</h2>
                     <p class="mt-2 text-gray-500">点击下方卡片，筛选您感兴趣的内容方向</p>
                 </div>
                 <div class="grid md:grid-cols-3 gap-6 text-center">
@@ -145,16 +120,26 @@
 
             <section id="content-blueprint" class="mb-16">
                 <div class="text-center mb-10">
-                    <h2 class="text-2xl md:text-3xl font-bold section-title">第三步：探索“帮助型”内容蓝图</h2>
+                    <h2 class="text-2xl md:text-3xl font-bold section-title">第二部分：探索“帮助型”内容蓝图</h2>
                     <p class="mt-2 text-gray-500">这里是20个精心设计的引流视频选题，点击卡片展开查看详细策略</p>
                 </div>
                 <div id="topic-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                 </div>
             </section>
 
+            <section id="content-directory" class="mb-16">
+                <div class="text-center mb-10">
+                    <h2 class="text-2xl md:text-3xl font-bold section-title">第三部分：内容目录</h2>
+                    <p class="mt-2 text-gray-500">已完成的深度内容库，点击查看详情</p>
+                </div>
+                <div id="library-list" class="bg-white p-6 md:p-8 rounded-2xl shadow-sm space-y-4">
+                    <!-- Content library links will be dynamically added here -->
+                </div>
+            </section>
+
             <section id="growth-flywheel">
                 <div class="text-center mb-12">
-                    <h2 class="text-2xl md:text-3xl font-bold section-title">第四步：构建增长飞轮</h2>
+                    <h2 class="text-2xl md:text-3xl font-bold section-title">第四部分：构建增长飞轮</h2>
                     <p class="mt-2 text-gray-500">通过内容联动，将一次性观众转化为长期粉丝</p>
                 </div>
                 <div class="grid lg:grid-cols-2 gap-12 items-center">
@@ -249,10 +234,27 @@
                 { id: 20, pillar: '情绪工具', title: '当你感到“全世界只剩下自己一个人”时', details: '<strong>目标用户痛点：</strong>直击现代社会年轻人的核心痛点——深刻的孤独感。<br><strong>三木角色定位：</strong>“共情者”和“情绪疗愈师”。<br><strong>内容切入点与价值主张：</strong>不提供廉价的建议。而是先承认孤独的普遍性和痛苦，然后分享故事，最后引向“如何与孤独共处”的智慧。<br><strong>SEO价值：</strong>关键词“孤独感”、“如何排解寂寞”、“一个人生活”、“心理健康”。' }
             ];
 
+            const contentLibraryData = [
+                {
+                    id: 'pet-goodbye',
+                    title: '送别毛孩子：一份充满尊严与爱的温哥华指南',
+                    type: '信息图',
+                    url: './article.html?topic=pet-goodbye'
+                },
+                {
+                    id: 'hospice-care',
+                    title: '生命的最后一程：温哥华如何诠释“尊严”与“关怀”？',
+                    type: '研究文件',
+                    url: './article.html?topic=hospice-care'
+                }
+                // Future articles will be added here
+            ];
+
             function initializeDashboard() {
                 const topicGrid = document.getElementById('topic-grid');
                 const pillarFilters = document.querySelectorAll('.pillar-card');
                 const clearFilterBtn = document.getElementById('clear-filter');
+                const libraryList = document.getElementById('library-list');
 
                 function renderTopics(filter = 'all') {
                     topicGrid.innerHTML = '';
@@ -283,6 +285,27 @@
                             card.classList.toggle('open');
                         });
                         topicGrid.appendChild(card);
+                    });
+                }
+
+                function renderLibrary() {
+                    libraryList.innerHTML = '';
+                    if (contentLibraryData.length === 0) {
+                        libraryList.innerHTML = `<p class="text-center text-gray-500">内容库暂无内容。</p>`;
+                        return;
+                    }
+                    contentLibraryData.forEach(item => {
+                        const linkItem = document.createElement('a');
+                        linkItem.href = item.url;
+                        linkItem.target = "_blank"; // Open in a new tab
+                        linkItem.className = "block p-4 bg-gray-50 rounded-lg hover:bg-blue-50 hover:shadow-sm transition-all duration-300";
+                        linkItem.innerHTML = `
+                            <div class="flex justify-between items-center">
+                                <span class="font-semibold text-gray-800">${item.title}</span>
+                                <span class="text-xs font-bold text-white py-1 px-3 rounded-full" style="background-color: #A58D78;">${item.type}</span>
+                            </div>
+                        `;
+                        libraryList.appendChild(linkItem);
                     });
                 }
 
@@ -358,6 +381,7 @@
                 }
 
                 renderTopics();
+                renderLibrary();
                 renderChart();
             }
         });
