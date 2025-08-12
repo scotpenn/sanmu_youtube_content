@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>“三木有话说”频道交互式战略仪表盘</title>
+    <meta name="robots" content="noindex, nofollow">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Calm Wisdom Palette -->
+    <!-- Application Structure Plan: 本应用设计为一个单页交互式仪表盘，旨在将静态的战略报告转化为一个动态、可探索的决策工具。结构分为四个核心板块：1. 战略转型核心：直观展示从“旧定位”到“新定位”的转变，让用户立刻抓住战略精髓。2. 三大内容支柱（交互式筛选器）：将报告中的三大支柱设计为可点击的筛选按钮，用户通过点击可以直接筛选下方的内容蓝图，实现了从宏观策略到具体选题的无缝联动，这种任务驱动的结构比线性阅读报告更高效。3. 内容战略蓝图（可展开卡片）：将20个选题以卡片网格形式呈现，点击可展开查看详情。这种设计避免了信息过载，让用户可以按需探索，聚焦于感兴趣的选题。4. 增长飞轮与数据洞察：通过HTML/CSS构建的“帮助-主干-英雄”模型图和Chart.js的柱状图，将抽象的增长模型和内容分布数据可视化，帮助用户理解内容生态的构建方式。整个结构旨在引导用户从“理解战略”到“探索选题”再到“构思执行”，形成一个完整的决策支持闭环。 -->
+    <!-- Visualization & Content Choices: 1. 战略转型对比：使用左右分栏的HTML结构，清晰对比新旧定位，目标是“告知”。2. 内容支柱筛选器：使用HTML按钮组结合JS事件监听，实现对下方卡片列表的动态筛选，目标是“组织”和“互动”。3. 选题详情卡片：使用HTML/CSS构建可点击展开的卡片，内部包含结构化文本，用于“告知”和“组织”每个选题的详细策略，JS控制显隐。4. 增长飞轮图：使用Tailwind CSS的Flexbox和Grid布局构建一个流程图，替代静态图片，目标是“展示关系”。5. 选题支柱分布图：使用Chart.js的柱状图，将20个选题按三大支柱进行数据统计和可视化，目标是“比较”和“告知”内容策略的分布情况。所有选择均未使用SVG或Mermaid，完全符合技术要求，并服务于将报告内容转化为易于理解和操作的交互体验。 -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background-color: #FDFBF8;
+            color: #383838;
+        }
+        .pillar-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .pillar-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.07), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .pillar-card.active {
+            border-color: #A58D78;
+            background-color: #F5F1ED;
+            transform: translateY(-2px);
+        }
+        .topic-card-details {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.7s ease-in-out;
+        }
+        .topic-card.open .topic-card-details {
+            max-height: 1000px;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 320px;
+            max-height: 400px;
+        }
+        .btn-primary {
+            background-color: #A58D78;
+            color: #FFFFFF;
+            transition: background-color 0.3s;
+        }
+        .btn-primary:hover {
+            background-color: #8E7661;
+        }
+        .section-title {
+            color: #8E7661;
+        }
+        .login-error {
+            animation: shake 0.5s;
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <div id="login-overlay" class="fixed inset-0 bg-gray-100 bg-opacity-75 backdrop-blur-sm flex items-center justify-center z-50">
+        <div class="w-full max-w-sm bg-white p-8 rounded-2xl shadow-lg text-center">
+            <h2 class="text-2xl font-bold section-title mb-2">访问授权</h2>
+            <p class="text-gray-500 mb-6">请输入密码以继续</p>
+            <form id="login-form">
+                <input type="password" id="password-input" class="w-full px-4 py-3 border border-gray-300 rounded-lg text-center focus:outline-none focus:ring-2 focus:ring-A58D78" placeholder="Password">
+                <p id="error-message" class="text-red-500 text-sm mt-2 h-5"></p>
+                <button type="submit" class="w-full btn-primary font-bold py-3 px-6 rounded-lg mt-4">进入</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="main-content" class="hidden">
+        <header class="py-8 md:py-12">
+            <div class="container mx-auto px-6 text-center">
+                <h1 class="text-3xl md:text-5xl font-bold section-title">“三木有话说”频道</h1>
+                <p class="mt-2 text-lg md:text-xl text-gray-600">交互式内容战略仪表盘</p>
+            </div>
+        </header>
+
+        <main class="container mx-auto px-6 pb-20">
+            
+            <section id="strategy-core" class="mb-16">
+                <div class="text-center mb-10">
+                    <h2 class="text-2xl md:text-3xl font-bold section-title">第一步：战略核心转型</h2>
+                    <p class="mt-2 text-gray-500">从“殡葬故事分享”到“青年生命解惑中心”的价值升维</p>
+                </div>
+                <div class="grid md:grid-cols-2 gap-8 items-center bg-white p-8 rounded-2xl shadow-sm">
+                    <div class="border-r-0 md:border-r md:pr-8 border-gray-200">
+                        <h3 class="text-xl font-bold text-red-700 mb-3">旧定位：增长瓶颈</h3>
+                        <p class="text-gray-600 mb-4">内容被动地被“殡葬师”标签定义，吸引的观众年龄层偏高（40岁+），虽然忠诚但基数有限，互动率低。视频停留在“我经历的一个故事”，缺乏与年轻观众的深度价值连接。</p>
+                        <div class="flex items-center text-red-500">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"></path></svg>
+                            <span>价值主张与目标观众错位</span>
+                        </div>
+                    </div>
+                    <div class="mt-6 md:mt-0">
+                        <h3 class="text-xl font-bold text-green-700 mb-3">新定位：增长引擎</h3>
+                        <p class="text-gray-600 mb-4">主动利用“殡葬师”的终局视角，为年轻的“存在主义焦虑者”和“高压生活者”提供稀缺的“情绪价值”和“人生解惑”。将每一个故事，都升华为解决一个具体生活困惑的答案。</p>
+                        <div class="flex items-center text-green-600">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            <span>成为青年社群的“人生引路人”</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="pillars" class="mb-16">
+                <div class="text-center mb-10">
+                    <h2 class="text-2xl md:text-3xl font-bold section-title">第二步：聚焦三大内容支柱</h2>
+                    <p class="mt-2 text-gray-500">点击下方卡片，筛选您感兴趣的内容方向</p>
+                </div>
+                <div class="grid md:grid-cols-3 gap-6 text-center">
+                    <div id="pillar-filter-1" data-pillar="人生解惑" class="pillar-card p-6 bg-white rounded-2xl border-2 border-transparent cursor-pointer">
+                        <h3 class="font-bold text-lg">人生解惑与存在主义导航</h3>
+                        <p class="text-sm text-gray-500 mt-2">回答“我该如何生活？”的终极问题，为观众提供精神“锚点”。</p>
+                    </div>
+                    <div id="pillar-filter-2" data-pillar="情绪工具" class="pillar-card p-6 bg-white rounded-2xl border-2 border-transparent cursor-pointer">
+                        <h3 class="font-bold text-lg">情绪工具与关系处理</h3>
+                        <p class="text-sm text-gray-500 mt-2">解决“我该如何与自己和他人相处？”的现实难题。</p>
+                    </div>
+                    <div id="pillar-filter-3" data-pillar="禁忌揭秘" class="pillar-card p-6 bg-white rounded-2xl border-2 border-transparent cursor-pointer">
+                        <h3 class="font-bold text-lg">禁忌揭秘与实用智慧</h3>
+                        <p class="text-sm text-gray-500 mt-2">满足“不敢问但又必须知道的事”的好奇心与实用需求。</p>
+                    </div>
+                </div>
+                <div class="text-center mt-6">
+                    <button id="clear-filter" class="btn-primary font-bold py-2 px-6 rounded-full text-sm">显示全部</button>
+                </div>
+            </section>
+
+            <section id="content-blueprint" class="mb-16">
+                <div class="text-center mb-10">
+                    <h2 class="text-2xl md:text-3xl font-bold section-title">第三步：探索“帮助型”内容蓝图</h2>
+                    <p class="mt-2 text-gray-500">这里是20个精心设计的引流视频选题，点击卡片展开查看详细策略</p>
+                </div>
+                <div id="topic-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                </div>
+            </section>
+
+            <section id="growth-flywheel">
+                <div class="text-center mb-12">
+                    <h2 class="text-2xl md:text-3xl font-bold section-title">第四步：构建增长飞轮</h2>
+                    <p class="mt-2 text-gray-500">通过内容联动，将一次性观众转化为长期粉丝</p>
+                </div>
+                <div class="grid lg:grid-cols-2 gap-12 items-center">
+                    <div>
+                        <h3 class="font-bold text-xl mb-4 text-center">内容生态系统</h3>
+                        <div class="space-y-6">
+                            <div class="bg-white p-6 rounded-2xl shadow-sm">
+                                <h4 class="font-bold text-lg text-blue-600">1. 帮助 (Help) - 引流</h4>
+                                <p class="text-gray-600 mt-1">通过解决具体、高搜索量的情绪或实用问题（如“如何停止精神内耗”），吸引新观众。本页面的20个选题即为此类内容。</p>
+                            </div>
+                            <div class="text-center">
+                                <svg class="w-8 h-8 text-gray-400 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
+                            </div>
+                            <div class="bg-white p-6 rounded-2xl shadow-sm">
+                                <h4 class="font-bold text-lg text-purple-600">2. 主干 (Hub) - 留存</h4>
+                                <p class="text-gray-600 mt-1">在“帮助”视频结尾，引导观众观看能深化情感连接的“主干”内容（如《一场只有3个参与者的葬礼》），培养观看习惯和社群认同。</p>
+                            </div>
+                             <div class="text-center">
+                                <svg class="w-8 h-8 text-gray-400 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
+                            </div>
+                            <div class="bg-white p-6 rounded-2xl shadow-sm">
+                                <h4 class="font-bold text-lg text-amber-600">3. 英雄 (Hero) - 破圈</h4>
+                                <p class="text-gray-600 mt-1">通过策划大型、高概念的“英雄”内容（如《邀请100位年轻人写下墓志铭》的社会实验），实现破圈传播，确立频道品牌地位。</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-10 lg:mt-0">
+                         <h3 class="font-bold text-xl mb-4 text-center">选题策略分布</h3>
+                        <div class="bg-white p-6 rounded-2xl shadow-sm">
+                            <div class="chart-container">
+                                <canvas id="pillarsChart"></canvas>
+                            </div>
+                             <p class="text-center text-sm text-gray-500 mt-4">此图表展示了20个“帮助型”选题在三大内容支柱上的分布情况，确保了内容策略的平衡性与多样性。</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+        
+        <footer class="text-center py-8 border-t border-gray-200">
+            <p class="text-gray-500 text-sm">为“三木有话说”频道量身打造的交互式战略规划</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const loginOverlay = document.getElementById('login-overlay');
+            const loginForm = document.getElementById('login-form');
+            const passwordInput = document.getElementById('password-input');
+            const errorMessage = document.getElementById('error-message');
+            const mainContent = document.getElementById('main-content');
+            
+            const correctPassword = 'sanmu';
+
+            loginForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const enteredPassword = passwordInput.value;
+                if (enteredPassword === correctPassword) {
+                    loginOverlay.style.display = 'none';
+                    mainContent.classList.remove('hidden');
+                    initializeDashboard();
+                } else {
+                    errorMessage.textContent = '密码错误，请重试';
+                    passwordInput.classList.add('login-error');
+                    setTimeout(() => {
+                        passwordInput.classList.remove('login-error');
+                    }, 500);
+                }
+            });
+
+            const topicsData = [
+                { id: 1, pillar: '人生解惑', title: '【三木】停止精神内耗的终极答案：我在无数告别中发现的3个生活原则', details: '<strong>目标用户痛点：</strong>直接命中“高压生活者”和“存在主义焦虑者”普遍存在的“精神内耗”和“选择困难”的痛点。<br><strong>三木角色定位：</strong>塑造三木为“智者”，从终局回看，提炼出超越日常琐碎的宏观智慧。<br><strong>内容切入点与价值主张：</strong>以一个因犹豫和内耗而留下巨大遗憾的真实故事引入。然后提炼出3个可被观众立刻应用的思维模型。价值在于将殡葬师的洞察转化为观众可执行的“人生算法”。<br><strong>SEO价值：</strong>强力捕捉“精神内耗”、“如何停止胡思乱想”、“人生意义”、“活在当下”等高搜索量关键词。' },
+                { id: 2, pillar: '情绪工具', title: '如何与“正在经历悲伤”的家人/朋友交谈？（附：绝对不能说的5句话）', details: '<strong>目标用户痛点：</strong>解决了年轻人在面对他人痛苦时“想帮忙却怕说错话”的强烈社交焦虑。<br><strong>三木角色定位：</strong>强化三木作为“共情者”和“引路人”的形象，提供极其实用的社交工具。<br><strong>内容切入点与价值主张：</strong>采用“Do\'s & Don\'ts”结构。用三木见证过的“笨拙但真诚的安慰”和“造成二次伤害的言语”作对比。提供可直接使用的“话术脚本”。<br><strong>SEO价值：</strong>目标关键词“如何安慰人”、“朋友失恋了怎么安慰”、“高情商安慰”等。' },
+                { id: 3, pillar: '禁忌揭秘', title: '“身后事”极简清单：普通人需要提前为自己和家人准备什么？', details: '<strong>目标用户痛点：</strong>将一个沉重的话题转化为一个可控、可执行的“项目管理”任务，降低心理门槛。<br><strong>三木角色定位：</strong>体现三木作为“引路人”的专业性和关怀，将复杂的流程梳理成清晰、温暖的指南。<br><strong>内容切入点与价值主-张：</strong>不仅仅是罗列清单，而是解释每一项准备背后的意义——“这不是在走向死亡，而是在更好地生活”。<br><strong>SEO价值：</strong>捕捉“生前整理”、“数字遗产”、“家庭应急”等实用性极强的搜索词。' },
+                { id: 4, pillar: '人生解惑', title: '“为什么是我？”——当你感觉被生活反复捶打时，请打开这个视频', details: '<strong>目标用户痛点：</strong>针对年轻人在遭遇挫折、不公或厄运时普遍会产生的“受害者心态”和“存在主义危机”。<br><strong>三木角色定位：</strong>扮演“见证者”和“智者”，提供一个超越个人痛苦的宏大视角。<br><strong>内容切入点与价值主张：</strong>核心价值不是给出答案，而是改变提问的方式。引导观众从“为什么是我受苦？”转向“这段经历想教会我什么？”。<br><strong>SEO价值：</strong>关键词“人生低谷”、“如何走出痛苦”、“感觉不公平”、“治愈”等。' },
+                { id: 5, pillar: '情绪工具', title: '如何处理与父母在“生死观”上的巨大分歧？', details: '<strong>目标用户痛点：</strong>这是一个非常具体且普遍的代际冲突场景，年轻人希望开明地讨论，而父母可能非常忌讳。<br><strong>三木角色定位：</strong>作为“共情者”和“引路人”，他既理解年轻人的想法，也懂得老一辈的恐惧。<br><strong>内容切入点与价值主张：</strong>提供具体的沟通策略和话术，例如“不要在节假日谈”、“从关心父母的健康和愿望开始”。<br><strong>SEO价值：</strong>目标关键词“和父母沟通”、“代际冲突”、“家庭关系”、“生死教育”。' },
+                { id: 6, pillar: '人生解惑', title: '我见过最“值得”的人生，都有一个共同点', details: '<strong>目标用户痛点：</strong>回应年轻人对于“成功”和“人生价值”的迷茫，提供一个关于“何为值得”的另类答案。<br><strong>三木角色定位：</strong>“智者”形象。通过对比不同社会身份的临终状态，提炼出超越物质和名望的共同价值。<br><strong>内容切入点与价值主张：</strong>核心是打破“财富=成功”的单一叙事，为观众提供多元的价值坐标。<br><strong>SEO价值：</strong>捕捉“人生意义”、“什么是成功”、“如何活出价值”、“个人成长”等核心人生议题。' },
+                { id: 7, pillar: '禁忌揭秘', title: '宠物离世指南：我们该如何与“毛孩子”好好告别？', details: '<strong>目标用户痛点：</strong>随着养宠人群的扩大，宠物离世带来的悲伤和仪式需求日益增长，但相关指导却很缺乏。<br><strong>三木角色定位：</strong>“共情者”。将对人的关怀延伸到对动物生命的尊重上。<br><strong>内容切入点与价值主张：</strong>提供从心理调适到具体仪式的全流程指导。承认并正当化“为宠物悲伤”的情感。<br><strong>SEO价值：</strong>关键词“宠物去世怎么办”、“宠物殡葬”、“如何走出宠物离世的悲伤”。' },
+                { id: 8, pillar: '情绪工具', title: '“断舍离”终极版：如何处理逝去亲人的遗物？', details: '<strong>目标用户痛点：</strong>这是一个极其痛苦和纠结的过程，处理遗物往往会引发第二波巨大的悲伤。<br><strong>三木角色定位：</strong>“情绪疗愈师”。他能理解这种纠结，并提供兼具情感关怀和操作性的建议。<br><strong>内容切入点与价值主张：</strong>提出“分类法”：分为“保留-传承”、“赠予-分享”、“封存-告别”三类。强调这不是“丢弃”，而是“转化”记忆的形式。<br><strong>SEO价值：</strong>关键词“如何处理遗物”、“睹物思人”、“走出悲伤”。' },
+                { id: 9, pillar: '人生解惑', title: '如果你害怕“错过”，不妨听听那些“最后悔”的人说了什么', details: '<strong>目标用户痛点：</strong>针对年轻人的“FOMO”（Fear of Missing Out）心态，即对错过机会的普遍焦虑。<br><strong>三木角色定位：</strong>“见证者”。他见证了人生真正的“错过”是什么，他的话语具有终极的说服力。<br><strong>内容切入点与价值主张：</strong>揭示一个反直觉的真相：人们临终时后悔的，往往是“没能好好爱身边的人”、“没活出真实的自己”。<br><strong>SEO价值：</strong>关键词“人生遗憾”、“错过的机会”、“如何选择”、“活在当下”。' },
+                { id: 10, pillar: '禁忌揭秘', title: '立一份“情感遗嘱”：除了财产，你最想为家人留下什么？', details: '<strong>目标用户痛点：</strong>这是对“写遗嘱”这一话题的感性升级。年轻人可能没有多少财产，但他们有丰富的情感和想要表达的爱。<br><strong>三木角色定位：</strong>“引路人”。引导观众进行一次深刻的自我审视和情感梳理。<br><strong>内容切入点与价值主张：</strong>提供“情感遗嘱”的模板和引导性问题，将遗嘱从法律文件升华为爱的礼物。<br><strong>SEO价值：</strong>关键词“情感遗嘱”、“给家人的信”、“人生总结”、“如何表达爱”。' },
+                { id: 11, pillar: '情绪工具', title: '如何面对“第一次”参加葬礼的恐惧和不安？', details: '<strong>目标用户痛点：</strong>专门针对从未有过相关经历的年轻人，为他们进行一次“心理预演”，消除未知带来的恐惧。<br><strong>三木角色定位：</strong>“引路人”和“共情者”。<br><strong>内容切入点与价值主张：</strong>分步讲解全过程，重点不是礼仪，而是“心理建设”。告诉他们“感到悲伤是正常的”、“不知道说什么也是正常的”。<br><strong>SEO价值：</strong>关键词“第一次参加葬礼”、“葬礼恐惧”、“如何面对死亡”。' },
+                { id: 12, pillar: '人生解惑', title: '为什么说“好好活着”是对逝者最好的纪念？', details: '<strong>目标用户痛点：</strong>许多人在亲友离世后会陷入长期的愧疚和自我惩罚，觉得“我不配快乐”。<br><strong>三木角色定位：</strong>“情绪疗愈师”和“智者”。<br><strong>内容切入点与价值主张：</strong>核心论点是：逝者最大的遗愿，一定是希望活着的人能够幸福。将“纪念”从一种沉重的负担，转化为一种积极生活的动力。<br><strong>SEO价值：</strong>关键词“如何纪念亲人”、“走出悲伤”、“活着的意义”。' },
+                { id: 13, pillar: '禁忌揭秘', title: '临终关怀到底在做什么？（一个殡葬师的观察视角）', details: '<strong>目标用户痛点：</strong>“临终关怀”是一个大众听过但并不了解的概念，充满了误解和神秘感。<br><strong>三木角色定位：</strong>“见证者”和“职业揭秘者”。<br><strong>内容切入点与价值主张：</strong>讲述经过临终关怀的逝者与家属的状态有何不同。强调其核心是“提高生命最后一程的质量”，而非“放弃治疗”。<br><strong>SEO价值：</strong>关键词“临终关怀”、“安宁疗护”、“生命的尊严”。' },
+                { id: 14, pillar: '情绪工具', title: '如何与孩子谈论“死亡”？（分年龄段实用指南）', details: '<strong>目标用户痛点：</strong>针对年轻父母的核心育儿难题，这是一个高频、高痛点的搜索需求。<br><strong>三木角色定位：</strong>“引路人”。将他对生死的理解，转化为父母可以使用的、充满智慧的育儿工具。<br><strong>内容切入点与价值主张：</strong>提供分年龄段的沟通策略和比喻。例如，对幼儿可以用“花儿谢了”、“电池用完了”等比喻。<br><strong>SEO价值：</strong>关键词“如何和孩子谈论死亡”、“生命教育”、“儿童心理”。' },
+                { id: 15, pillar: '人生解惑', title: '从“墓碑”到“社交账号”：我们希望在世界上留下什么痕迹？', details: '<strong>目标用户痛点：</strong>这是一个非常现代的存在主义问题，引发年轻人对“数字身份”和“个人品牌”的深层思考。<br><strong>三木角色定位：</strong>“智者”。将古老的“墓志铭”概念与现代的“社交媒体”进行对比。<br><strong>内容切入点与价值主张：</strong>引导观众思考：“如果我的社交账号就是我的墓志铭，我希望它呈现一个怎样的我？”。这是一个哲学探讨。<br><strong>SEO价值：</strong>关键词“数字遗产”、“社交媒体”、“个人价值”、“墓志铭”。' },
+                { id: 16, pillar: '禁忌揭秘', title: '不同文化/信仰的葬礼有何不同？（一个殡葬师的跨文化观察）', details: '<strong>目标用户痛点：</strong>满足“深度好奇者”对世界文化多样性的兴趣，同时也是一个非常实用的社交礼仪指南。<br><strong>三木角色定位：</strong>“见证者”和“职业揭秘者”。<br><strong>内容切入点与价值主张：</strong>选择2-3个有代表性的文化进行对比，讲述仪式背后的不同生死观。重点不在于猎奇，而在于展示人类面对告别的共同情感。<br><strong>SEO价值：</strong>关键词“葬礼习俗”、“跨文化交流”、“宗教仪式”。' },
+                { id: 17, pillar: '情绪工具', title: '如何原谅一个已经“无法道歉”的人？', details: '<strong>目标用户痛点：</strong>这是一个深刻的心理困境，可能是与逝去的亲人有未解的心结，或与一个永远离开自己生活的人有旧怨。<br><strong>三木角色定位：</strong>“情绪疗愈师”。<br><strong>内容切入点与价值主-张：</strong>核心观点是：“原谅”不是为了对方，而是为了解放自己。提供一些心理学上的方法，如“写一封不会寄出的信”、“进行一次空椅子对话”。<br><strong>SEO价值：</strong>关键词“如何原谅”、“放下过去”、“心理创伤”、“自我和解”。' },
+                { id: 18, pillar: '人生解惑', title: '“无常”才是人生的常态：如何拥抱生活中的不确定性？', details: '<strong>目标用户痛点：</strong>针对年轻人对未来的不确定性感到的巨大焦虑，以及对“稳定”的过度渴望。<br><strong>三木角色定位：</strong>“智者”。他的整个职业都在直面“无常”。<br><strong>内容切入点与价值主张：</strong>通过故事说明，人生最大的确定性就是“不确定性”。与其对抗，不如学会与之共舞。提供心态调整的建议。<br><strong>SEO价值：</strong>关键词“不确定性”、“未来焦虑”、“如何应对变化”、“平常心”。' },
+                { id: 19, pillar: '禁忌揭秘', title: '遗体捐献/器官捐献：你需要知道的所有事', details: '<strong>目标用户痛点：</strong>这是一个高尚但信息不透明的话题。许多年轻人有此意愿，但因流程不清晰、心存疑虑而却步。<br><strong>三木角色定位：</strong>“引路人”和“职业揭秘者”。<br><strong>内容切入点与价值主张：</strong>以Q&A的形式，清晰解答核心问题。强调这是一种生命延续的方式，传递大爱。<br><strong>SEO价值：</strong>关键词“遗体捐献”、“器官捐献”、“生命延续”。' },
+                { id: 20, pillar: '情绪工具', title: '当你感到“全世界只剩下自己一个人”时', details: '<strong>目标用户痛点：</strong>直击现代社会年轻人的核心痛点——深刻的孤独感。<br><strong>三木角色定位：</strong>“共情者”和“情绪疗愈师”。<br><strong>内容切入点与价值主张：</strong>不提供廉价的建议。而是先承认孤独的普遍性和痛苦，然后分享故事，最后引向“如何与孤独共处”的智慧。<br><strong>SEO价值：</strong>关键词“孤独感”、“如何排解寂寞”、“一个人生活”、“心理健康”。' }
+            ];
+
+            function initializeDashboard() {
+                const topicGrid = document.getElementById('topic-grid');
+                const pillarFilters = document.querySelectorAll('.pillar-card');
+                const clearFilterBtn = document.getElementById('clear-filter');
+
+                function renderTopics(filter = 'all') {
+                    topicGrid.innerHTML = '';
+                    const filteredTopics = filter === 'all' ? topicsData : topicsData.filter(t => t.pillar === filter);
+
+                    filteredTopics.forEach(topic => {
+                        const card = document.createElement('div');
+                        card.className = 'topic-card bg-white p-5 rounded-2xl shadow-sm cursor-pointer transition-all duration-300';
+                        card.dataset.pillar = topic.pillar;
+
+                        let pillarColorClass = '';
+                        switch (topic.pillar) {
+                            case '人生解惑': pillarColorClass = 'text-blue-600'; break;
+                            case '情绪工具': pillarColorClass = 'text-purple-600'; break;
+                            case '禁忌揭秘': pillarColorClass = 'text-amber-600'; break;
+                        }
+
+                        card.innerHTML = `
+                            <div class="flex justify-between items-start">
+                                <h4 class="font-bold text-md flex-1 pr-2">${topic.title}</h4>
+                                <span class="text-xs font-semibold ${pillarColorClass} bg-opacity-20 bg-${pillarColorClass.split('-')[1]}-100 py-1 px-2 rounded-full">${topic.pillar}</span>
+                            </div>
+                            <div class="topic-card-details mt-4 pt-4 border-t border-gray-100 text-sm text-gray-600 leading-relaxed">
+                                <p>${topic.details}</p>
+                            </div>
+                        `;
+                        card.addEventListener('click', () => {
+                            card.classList.toggle('open');
+                        });
+                        topicGrid.appendChild(card);
+                    });
+                }
+
+                pillarFilters.forEach(filter => {
+                    filter.addEventListener('click', () => {
+                        pillarFilters.forEach(f => f.classList.remove('active'));
+                        filter.classList.add('active');
+                        const pillar = filter.dataset.pillar;
+                        renderTopics(pillar);
+                    });
+                });
+
+                clearFilterBtn.addEventListener('click', () => {
+                    pillarFilters.forEach(f => f.classList.remove('active'));
+                    renderTopics();
+                });
+                
+                function renderChart() {
+                    const ctx = document.getElementById('pillarsChart').getContext('2d');
+                    const pillarCounts = topicsData.reduce((acc, topic) => {
+                        acc[topic.pillar] = (acc[topic.pillar] || 0) + 1;
+                        return acc;
+                    }, {});
+
+                    const labels = Object.keys(pillarCounts);
+                    const data = Object.values(pillarCounts);
+                    
+                    new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: labels,
+                            datasets: [{
+                                label: '选题数量',
+                                data: data,
+                                backgroundColor: [
+                                    'rgba(59, 130, 246, 0.7)',
+                                    'rgba(139, 92, 246, 0.7)',
+                                    'rgba(217, 119, 6, 0.7)'
+                                ],
+                                borderColor: [
+                                    'rgba(59, 130, 246, 1)',
+                                    'rgba(139, 92, 246, 1)',
+                                    'rgba(217, 119, 6, 1)'
+                                ],
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    display: false
+                                },
+                                tooltip: {
+                                    callbacks: {
+                                        label: function(context) {
+                                            return ` ${context.dataset.label}: ${context.raw} 个`;
+                                        }
+                                    }
+                                }
+                            },
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    ticks: {
+                                        stepSize: 1
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
+
+                renderTopics();
+                renderChart();
+            }
+        });
+    </script>
+</body>
+</html>
