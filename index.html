@@ -135,7 +135,55 @@
                 <div id="library-list" class="bg-white p-6 md:p-8 rounded-2xl shadow-sm space-y-4">
                     <!-- Content library links will be dynamically added here -->
                 </div>
+                <div class="text-center mt-6">
+                    <button id="add-article-btn" class="btn-primary font-bold py-2 px-6 rounded-full text-sm">
+                        + 添加新文章
+                    </button>
+                </div>
             </section>
+
+            <!-- Add Article Modal -->
+            <div id="add-article-modal" class="fixed inset-0 bg-gray-600 bg-opacity-75 hidden items-center justify-center z-50">
+                <div class="bg-white p-8 rounded-2xl shadow-lg max-w-md w-full mx-4">
+                    <h3 class="text-xl font-bold mb-4">添加新文章</h3>
+                    <form id="add-article-form">
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">文章标题</label>
+                            <input type="text" id="article-title" required class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-A58D78">
+                        </div>
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">文章ID（用于文件名）</label>
+                            <input type="text" id="article-id" required pattern="[a-z0-9-]+" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-A58D78">
+                            <p class="text-xs text-gray-500 mt-1">只能使用小写字母、数字和连字符</p>
+                        </div>
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">文章类型</label>
+                            <select id="article-type" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-A58D78">
+                                <option value="信息图">信息图</option>
+                                <option value="研究文件">研究文件</option>
+                                <option value="深度分析">深度分析</option>
+                                <option value="实用指南">实用指南</option>
+                            </select>
+                        </div>
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">文件格式</label>
+                            <select id="article-format" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-A58D78">
+                                <option value="md">Markdown (.md)</option>
+                                <option value="js">JavaScript (.js)</option>
+                            </select>
+                        </div>
+                        <div class="flex justify-end space-x-3">
+                            <button type="button" id="cancel-article" class="px-4 py-2 text-gray-600 hover:text-gray-800">取消</button>
+                            <button type="submit" class="btn-primary px-4 py-2 rounded-lg">生成配置</button>
+                        </div>
+                    </form>
+                    <div id="article-config" class="hidden mt-6 p-4 bg-gray-100 rounded-lg">
+                        <h4 class="font-bold mb-2">生成的配置：</h4>
+                        <pre id="config-code" class="text-sm overflow-x-auto"></pre>
+                        <p class="text-sm text-gray-600 mt-2">请将此配置添加到 contentLibraryData 数组中</p>
+                    </div>
+                </div>
+            </div>
 
             <section id="growth-flywheel">
                 <div class="text-center mb-12">
@@ -193,17 +241,54 @@
             const errorMessage = document.getElementById('error-message');
             const mainContent = document.getElementById('main-content');
             
-            const correctPassword = 'sanmu';
+            // 检查是否已登录
+            const authToken = localStorage.getItem('authToken');
+            if (authToken) {
+                // 验证 token 是否有效（简单检查）
+                loginOverlay.style.display = 'none';
+                mainContent.classList.remove('hidden');
+                initializeDashboard();
+            }
 
-            loginForm.addEventListener('submit', (e) => {
+            loginForm.addEventListener('submit', async (e) => {
                 e.preventDefault();
                 const enteredPassword = passwordInput.value;
-                if (enteredPassword === correctPassword) {
-                    loginOverlay.style.display = 'none';
-                    mainContent.classList.remove('hidden');
-                    initializeDashboard();
-                } else {
-                    errorMessage.textContent = '密码错误，请重试';
+                
+                try {
+                    // 如果是本地开发，使用本地验证
+                    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+                        if (enteredPassword === 'sanmu123') {
+                            localStorage.setItem('authToken', 'local-dev-token');
+                            loginOverlay.style.display = 'none';
+                            mainContent.classList.remove('hidden');
+                            initializeDashboard();
+                        } else {
+                            throw new Error('密码错误');
+                        }
+                        return;
+                    }
+                    
+                    // 生产环境使用 API
+                    const response = await fetch('/api/auth', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ password: enteredPassword })
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (data.success) {
+                        localStorage.setItem('authToken', data.token);
+                        loginOverlay.style.display = 'none';
+                        mainContent.classList.remove('hidden');
+                        initializeDashboard();
+                    } else {
+                        throw new Error(data.message || '密码错误');
+                    }
+                } catch (error) {
+                    errorMessage.textContent = error.message || '密码错误，请重试';
                     passwordInput.classList.add('login-error');
                     setTimeout(() => {
                         passwordInput.classList.remove('login-error');
@@ -242,10 +327,16 @@
                     url: './article.html?topic=pet-goodbye'
                 },
                 {
-                    id: 'hospice-care',
-                    title: '生命的最后一程：温哥华如何诠释“尊严”与“关怀”？',
+                    id: 'exhausted',
+                    title: '停止精神内耗的终极答案',
+                    type: '深度分析',
+                    url: './article.html?topic=exhausted&format=md'
+                },
+                {
+                    id: 'pet&hospic',
+                    title: '温哥华本地化选题：毛孩子离世与临终关怀',
                     type: '研究文件',
-                    url: './article.html?topic=hospice-care'
+                    url: './article.html?topic=pet&hospic&format=md'
                 }
                 // Future articles will be added here
             ];
@@ -383,6 +474,95 @@
                 renderTopics();
                 renderLibrary();
                 renderChart();
+                
+                // Add Article functionality
+                const addArticleBtn = document.getElementById('add-article-btn');
+                const addArticleModal = document.getElementById('add-article-modal');
+                const addArticleForm = document.getElementById('add-article-form');
+                const cancelArticleBtn = document.getElementById('cancel-article');
+                const articleConfig = document.getElementById('article-config');
+                const configCode = document.getElementById('config-code');
+
+                addArticleBtn.addEventListener('click', () => {
+                    addArticleModal.classList.remove('hidden');
+                    addArticleModal.classList.add('flex');
+                });
+                
+                cancelArticleBtn.addEventListener('click', () => {
+                    addArticleModal.classList.add('hidden');
+                    addArticleModal.classList.remove('flex');
+                    addArticleForm.reset();
+                    articleConfig.classList.add('hidden');
+                });
+                
+                // Close modal when clicking outside
+                addArticleModal.addEventListener('click', (e) => {
+                    if (e.target === addArticleModal) {
+                        addArticleModal.classList.add('hidden');
+                        addArticleModal.classList.remove('flex');
+                        addArticleForm.reset();
+                        articleConfig.classList.add('hidden');
+                    }
+                });
+                
+                addArticleForm.addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    
+                    const title = document.getElementById('article-title').value;
+                    const id = document.getElementById('article-id').value;
+                    const type = document.getElementById('article-type').value;
+                    const format = document.getElementById('article-format').value;
+                    
+                    // Generate configuration
+                    const config = {
+                        id: id,
+                        title: title,
+                        type: type,
+                        url: `./article.html?topic=${id}${format === 'md' ? '&format=md' : ''}`
+                    };
+                    
+                    // Display configuration
+                    const configText = `{
+    id: '${config.id}',
+    title: '${config.title}',
+    type: '${config.type}',
+    url: '${config.url}'
+}`;
+                    
+                    configCode.textContent = configText;
+                    articleConfig.classList.remove('hidden');
+                    
+                    // Create instructions
+                    const instructions = document.createElement('div');
+                    instructions.className = 'mt-4 p-4 bg-blue-50 rounded-lg text-sm';
+                    instructions.innerHTML = `
+                        <h5 class="font-bold mb-2">下一步操作：</h5>
+                        <ol class="list-decimal list-inside space-y-1">
+                            <li>在 VS Code 中创建文件 <code class="bg-white px-1 py-0.5 rounded">/articles/${id}.${format}</code></li>
+                            <li>将上述配置添加到 index.html 中的 contentLibraryData 数组</li>
+                            <li>提交并推送到 GitHub，Vercel 会自动部署</li>
+                        </ol>
+                    `;
+                    
+                    // 移除旧的说明
+                    const oldInstructions = document.getElementById('next-steps');
+                    if (oldInstructions) {
+                        oldInstructions.remove();
+                    }
+                    
+                    instructions.id = 'next-steps';
+                    articleConfig.appendChild(instructions);
+                });
+
+                // Add logout functionality
+                const logoutBtn = document.createElement('button');
+                logoutBtn.textContent = '退出登录';
+                logoutBtn.className = 'fixed top-4 right-4 text-sm text-gray-600 hover:text-gray-800 z-10';
+                logoutBtn.addEventListener('click', () => {
+                    localStorage.removeItem('authToken');
+                    location.reload();
+                });
+                document.body.appendChild(logoutBtn);
             }
         });
     </script>

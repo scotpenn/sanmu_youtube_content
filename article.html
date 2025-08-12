@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>“三木有话说”</title>
+    <title>"三木有话说"</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
@@ -78,10 +79,65 @@
             new Chart(ctx, chartData);
         }
 
+        // Function to fetch markdown content
+        async function fetchMarkdown(url) {
+            const response = await fetch(url);
+            if (!response.ok) {
+                throw new Error(`Failed to fetch markdown: ${response.statusText}`);
+            }
+            return await response.text();
+        }
+
+        // Function to render markdown content
+        function renderMarkdownContent(markdownText) {
+            const contentContainer = document.getElementById('content-container');
+            
+            // Configure marked options
+            marked.setOptions({
+                breaks: true,
+                gfm: true,
+                headerIds: true,
+                mangle: false
+            });
+
+            // Parse the markdown
+            const htmlContent = marked.parse(markdownText);
+            
+            // Extract title from first H1 if exists
+            const titleMatch = markdownText.match(/^#\s+(.+)$/m);
+            if (titleMatch) {
+                document.title = titleMatch[1];
+            }
+            
+            // Wrap content in styled container
+            contentContainer.innerHTML = `
+                <div class="prose prose-lg max-w-none mx-auto">
+                    <style>
+                        .prose h1 { color: #4682B4; text-align: center; font-size: 2.5rem; margin-bottom: 2rem; }
+                        .prose h2 { color: #4682B4; text-align: center; font-size: 2rem; margin-top: 3rem; margin-bottom: 1.5rem; }
+                        .prose h3 { color: #4682B4; font-size: 1.5rem; margin-top: 2rem; }
+                        .prose p { color: #374151; line-height: 1.8; margin-bottom: 1.5rem; }
+                        .prose strong { color: #20B2AA; }
+                        .prose ul, .prose ol { color: #374151; }
+                        .prose blockquote { border-left-color: #4682B4; background-color: #F0F8FF; padding: 1rem; }
+                        .prose img { border-radius: 0.5rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
+                        .prose pre { background-color: #F3F4F6; border-radius: 0.5rem; }
+                        .prose code { background-color: #F3F4F6; padding: 0.25rem 0.5rem; border-radius: 0.25rem; }
+                    </style>
+                    <div class="bg-white p-8 rounded-lg shadow-lg">
+                        ${htmlContent}
+                    </div>
+                </div>
+            `;
+            
+            contentContainer.classList.remove('opacity-0');
+        }
+
         // Main function to build the page
         async function buildPage() {
             const params = new URLSearchParams(window.location.search);
             const topicId = params.get('topic');
+            const format = params.get('format') || 'js'; // Default to js format
 
             if (!topicId) {
                 document.getElementById('content-container').innerHTML = `<h1 class="text-center text-2xl font-bold text-red-500">错误：未指定文章主题。</h1>`;
@@ -90,48 +146,54 @@
             }
 
             try {
-                // Load the specific article's data
-                await loadScript(`articles/${topicId}.js`);
-                
-                // The data is now available in the global `articleData` variable
-                const data = window.articleData;
+                if (format === 'md' || format === 'markdown') {
+                    // Load markdown file
+                    const markdownContent = await fetchMarkdown(`articles/${topicId}.md`);
+                    renderMarkdownContent(markdownContent);
+                } else {
+                    // Load JavaScript data file
+                    await loadScript(`articles/${topicId}.js`);
+                    
+                    // The data is now available in the global `articleData` variable
+                    const data = window.articleData;
 
-                // Set the page title
-                document.title = data.title;
+                    // Set the page title
+                    document.title = data.title;
 
-                // Build the HTML content from the data
-                const contentContainer = document.getElementById('content-container');
-                let html = `
-                    <header class="text-center py-8 md:py-12">
-                        <h1 class="text-4xl md:text-5xl font-bold" style="color: #4682B4;">${data.header.title}</h1>
-                        <p class="mt-4 text-lg md:text-xl text-gray-600">${data.header.subtitle}</p>
-                    </header>
-                `;
-
-                data.sections.forEach(section => {
-                    html += `
-                        <section class="mb-12 md:mb-20">
-                            ${section.title ? `<h2 class="text-2xl md:text-3xl font-bold text-center mb-8" style="color: #4682B4;">${section.title}</h2>` : ''}
-                            <div class="bg-white p-8 rounded-lg shadow-lg">
-                                ${section.content}
-                            </div>
-                        </section>
+                    // Build the HTML content from the data
+                    const contentContainer = document.getElementById('content-container');
+                    let html = `
+                        <header class="text-center py-8 md:py-12">
+                            <h1 class="text-4xl md:text-5xl font-bold" style="color: #4682B4;">${data.header.title}</h1>
+                            <p class="mt-4 text-lg md:text-xl text-gray-600">${data.header.subtitle}</p>
+                        </header>
                     `;
-                });
 
-                html += `
-                    <footer class="text-center py-8 border-t border-gray-200">
-                        <p class="text-xl font-semibold" style="color: #4682B4;">${data.footer.title}</p>
-                        <p class="mt-4 max-w-2xl mx-auto text-gray-600">${data.footer.text}</p>
-                    </footer>
-                `;
-                
-                contentContainer.innerHTML = html;
-                contentContainer.classList.remove('opacity-0');
+                    data.sections.forEach(section => {
+                        html += `
+                            <section class="mb-12 md:mb-20">
+                                ${section.title ? `<h2 class="text-2xl md:text-3xl font-bold text-center mb-8" style="color: #4682B4;">${section.title}</h2>` : ''}
+                                <div class="bg-white p-8 rounded-lg shadow-lg">
+                                    ${section.content}
+                                </div>
+                            </section>
+                        `;
+                    });
 
-                // If there's a chart, render it
-                if (data.chart) {
-                    renderChart(data.chart.canvasId, data.chart.chartConfig);
+                    html += `
+                        <footer class="text-center py-8 border-t border-gray-200">
+                            <p class="text-xl font-semibold" style="color: #4682B4;">${data.footer.title}</p>
+                            <p class="mt-4 max-w-2xl mx-auto text-gray-600">${data.footer.text}</p>
+                        </footer>
+                    `;
+                    
+                    contentContainer.innerHTML = html;
+                    contentContainer.classList.remove('opacity-0');
+
+                    // If there's a chart, render it
+                    if (data.chart) {
+                        renderChart(data.chart.canvasId, data.chart.chartConfig);
+                    }
                 }
 
             } catch (error) {
