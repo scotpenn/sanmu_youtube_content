@@ -17,8 +17,22 @@
     <style>
         body {
             font-family: 'Noto Sans SC', sans-serif;
-            background-color: #FDFBF8;
+            background-color: #FFF8F3;
             color: #383838;
+        }
+        .hero-section {
+            position: relative;
+            height: 60vh;
+            min-height: 400px;
+            overflow: hidden;
+        }
+        .hero-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom, rgba(255, 140, 90, 0.85), rgba(255, 195, 120, 0.7));
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         .pillar-card {
             transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -28,8 +42,8 @@
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.07), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
         }
         .pillar-card.active {
-            border-color: #A58D78;
-            background-color: #F5F1ED;
+            border-color: #FF8C5A;
+            background-color: #FFF4ED;
             transform: translateY(-2px);
         }
         .topic-card-details {
@@ -50,15 +64,24 @@
             max-height: 400px;
         }
         .btn-primary {
-            background-color: #A58D78;
+            background-color: #FF8C5A;
             color: #FFFFFF;
             transition: background-color 0.3s;
         }
         .btn-primary:hover {
-            background-color: #8E7661;
+            background-color: #FF7043;
         }
         .section-title {
-            color: #8E7661;
+            color: #D35F3C;
+        }
+        .accent-teal {
+            color: #4ECDC4;
+        }
+        .bg-warm-yellow {
+            background-color: #FFE0A3;
+        }
+        .bg-warm-coral {
+            background-color: #FFB59A;
         }
         .login-error {
             animation: shake 0.5s;
@@ -77,7 +100,7 @@
             <h2 class="text-2xl font-bold section-title mb-2">访问授权</h2>
             <p class="text-gray-500 mb-6">请输入密码以继续</p>
             <form id="login-form">
-                <input type="password" id="password-input" class="w-full px-4 py-3 border border-gray-300 rounded-lg text-center focus:outline-none focus:ring-2 focus:ring-A58D78" placeholder="Password">
+                <input type="password" id="password-input" class="w-full px-4 py-3 border border-gray-300 rounded-lg text-center focus:outline-none focus:ring-2 focus:ring-orange-400" placeholder="Password">
                 <p id="error-message" class="text-red-500 text-sm mt-2 h-5"></p>
                 <button type="submit" class="w-full btn-primary font-bold py-3 px-6 rounded-lg mt-4">进入</button>
             </form>
@@ -85,14 +108,17 @@
     </div>
 
     <div id="main-content" class="hidden">
-        <header class="py-8 md:py-12">
-            <div class="container mx-auto px-6 text-center">
-                <h1 class="text-3xl md:text-5xl font-bold section-title">“三木有话说”频道</h1>
-                <p class="mt-2 text-lg md:text-xl text-gray-600">交互式内容战略仪表盘</p>
+        <div class="hero-section">
+            <img src="./assets/images/Steveston.png" alt="Steveston Harbor" class="absolute inset-0 w-full h-full object-cover">
+            <div class="hero-overlay">
+                <div class="text-center text-white px-6">
+                    <h1 class="text-4xl md:text-6xl font-bold mb-4">"三木有话说"频道</h1>
+                    <p class="text-xl md:text-2xl">交互式内容战略仪表盘</p>
+                </div>
             </div>
-        </header>
+        </div>
 
-        <main class="container mx-auto px-6 pb-20">
+        <main class="container mx-auto px-6 py-12 pb-20">
             
             <section id="pillars" class="mb-16">
                 <div class="text-center mb-10">
@@ -177,7 +203,7 @@
                             <button type="submit" class="btn-primary px-4 py-2 rounded-lg">生成配置</button>
                         </div>
                     </form>
-                    <div id="article-config" class="hidden mt-6 p-4 bg-gray-100 rounded-lg">
+                    <div id="article-config" class="hidden mt-6 p-4 bg-orange-100 rounded-lg">
                         <h4 class="font-bold mb-2">生成的配置：</h4>
                         <pre id="config-code" class="text-sm overflow-x-auto"></pre>
                         <p class="text-sm text-gray-600 mt-2">请将此配置添加到 contentLibraryData 数组中</p>
@@ -195,14 +221,14 @@
                         <h3 class="font-bold text-xl mb-4 text-center">内容生态系统</h3>
                         <div class="space-y-6">
                             <div class="bg-white p-6 rounded-2xl shadow-sm">
-                                <h4 class="font-bold text-lg text-blue-600">1. 帮助 (Help) - 引流</h4>
+                                <h4 class="font-bold text-lg text-teal-600">1. 帮助 (Help) - 引流</h4>
                                 <p class="text-gray-600 mt-1">通过解决具体、高搜索量的情绪或实用问题（如“如何停止精神内耗”），吸引新观众。本页面的20个选题即为此类内容。</p>
                             </div>
                             <div class="text-center">
                                 <svg class="w-8 h-8 text-gray-400 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
                             </div>
                             <div class="bg-white p-6 rounded-2xl shadow-sm">
-                                <h4 class="font-bold text-lg text-purple-600">2. 主干 (Hub) - 留存</h4>
+                                <h4 class="font-bold text-lg text-orange-600">2. 主干 (Hub) - 留存</h4>
                                 <p class="text-gray-600 mt-1">在“帮助”视频结尾，引导观众观看能深化情感连接的“主干”内容（如《一场只有3个参与者的葬礼》），培养观看习惯和社群认同。</p>
                             </div>
                              <div class="text-center">
@@ -358,8 +384,8 @@
 
                         let pillarColorClass = '';
                         switch (topic.pillar) {
-                            case '人生解惑': pillarColorClass = 'text-blue-600'; break;
-                            case '情绪工具': pillarColorClass = 'text-purple-600'; break;
+                            case '人生解惑': pillarColorClass = 'text-teal-600'; break;
+                            case '情绪工具': pillarColorClass = 'text-orange-600'; break;
                             case '禁忌揭秘': pillarColorClass = 'text-amber-600'; break;
                         }
 
@@ -389,11 +415,11 @@
                         const linkItem = document.createElement('a');
                         linkItem.href = item.url;
                         linkItem.target = "_blank"; // Open in a new tab
-                        linkItem.className = "block p-4 bg-gray-50 rounded-lg hover:bg-blue-50 hover:shadow-sm transition-all duration-300";
+                        linkItem.className = "block p-4 bg-orange-50 rounded-lg hover:bg-amber-50 hover:shadow-sm transition-all duration-300";
                         linkItem.innerHTML = `
                             <div class="flex justify-between items-center">
                                 <span class="font-semibold text-gray-800">${item.title}</span>
-                                <span class="text-xs font-bold text-white py-1 px-3 rounded-full" style="background-color: #A58D78;">${item.type}</span>
+                                <span class="text-xs font-bold text-white py-1 px-3 rounded-full" style="background-color: #FF8C5A;">${item.type}</span>
                             </div>
                         `;
                         libraryList.appendChild(linkItem);
@@ -432,14 +458,14 @@
                                 label: '选题数量',
                                 data: data,
                                 backgroundColor: [
-                                    'rgba(59, 130, 246, 0.7)',
-                                    'rgba(139, 92, 246, 0.7)',
-                                    'rgba(217, 119, 6, 0.7)'
+                                    'rgba(78, 205, 196, 0.7)',
+                                    'rgba(255, 140, 90, 0.7)',
+                                    'rgba(255, 193, 7, 0.7)'
                                 ],
                                 borderColor: [
-                                    'rgba(59, 130, 246, 1)',
-                                    'rgba(139, 92, 246, 1)',
-                                    'rgba(217, 119, 6, 1)'
+                                    'rgba(78, 205, 196, 1)',
+                                    'rgba(255, 140, 90, 1)',
+                                    'rgba(255, 193, 7, 1)'
                                 ],
                                 borderWidth: 1
                             }]
@@ -534,7 +560,7 @@
                     
                     // Create instructions
                     const instructions = document.createElement('div');
-                    instructions.className = 'mt-4 p-4 bg-blue-50 rounded-lg text-sm';
+                    instructions.className = 'mt-4 p-4 bg-amber-50 rounded-lg text-sm';
                     instructions.innerHTML = `
                         <h5 class="font-bold mb-2">下一步操作：</h5>
                         <ol class="list-decimal list-inside space-y-1">

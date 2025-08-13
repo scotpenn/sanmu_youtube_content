@@ -11,23 +11,25 @@ This is a Chinese-language interactive dashboard website for the "三木有话�
 ### Core Files
 - `index.html` - Main dashboard with interactive strategy visualization
 - `article.html` - Template for displaying detailed content articles
-- `pet-goodbye.js` - Example article data module for pet farewell guide
+- `/articles/` - Directory containing article content in JS or Markdown format
+- `/api/` - Vercel serverless functions for authentication and configuration
 
 ### Key Features
-1. Password-protected access (password: "sanmu")
+1. Password-protected access (uses environment variable `LOGIN_PASSWORD`)
 2. Interactive content pillars with filtering
 3. Expandable topic cards with detailed strategies
 4. Chart.js visualizations for data insights
 5. Dynamic article system with JS-based content loading
+6. Support for both JavaScript and Markdown article formats
 
 ## Development Commands
 
 This is a static website with no build process. To run locally:
 ```bash
 # Use any static server, for example:
-python3 -m http.server 8000
+npm run dev  # Runs python3 -m http.server 8000
 # or
-npx http-server
+npm start    # Runs serve .
 ```
 
 ## Vercel Deployment
@@ -61,7 +63,7 @@ Two methods available:
 
 2. **Manual Method**:
    - Create article file: `/articles/[topic-id].{js|md}`
-   - Add configuration to `contentLibraryData` array
+   - Add configuration to `contentLibraryData` array in `index.html`
 
 ## Content Structure
 
@@ -87,7 +89,18 @@ Articles support two formats:
 
 Example URLs:
 - JS format: `article.html?topic=pet-goodbye`
-- MD format: `article.html?topic=new-article&format=md`
+- MD format: `article.html?topic=exhausted&format=md`
+
+### API Functions
+- `/api/auth.js` - Handles password authentication
+- `/api/config.js` - Returns environment configuration
+
+## Security Configuration
+
+The site includes security headers via `vercel.json`:
+- X-Content-Type-Options: nosniff
+- X-Frame-Options: SAMEORIGIN
+- X-XSS-Protection: 1; mode=block
 
 ## Important Notes
 
@@ -96,3 +109,4 @@ Example URLs:
 - Chart.js for data visualizations (no SVG/Mermaid)
 - Responsive design with mobile considerations
 - Internal use only (robots.txt prevents indexing)
+- No linting or type checking commands configured

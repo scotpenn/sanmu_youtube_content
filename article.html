@@ -13,7 +13,7 @@
     <style>
         body {
             font-family: 'Noto Sans SC', sans-serif;
-            background-color: #F0F8FF;
+            background-color: #FFF8F3;
         }
         .chart-container {
             position: relative;
@@ -36,7 +36,7 @@
             top: 1.5rem;
             width: 2px;
             height: 100%;
-            background-color: #4682B4;
+            background-color: #FF8C5A;
             opacity: 0.3;
         }
         .flow-dot {
@@ -46,7 +46,7 @@
             width: 1.5rem;
             height: 1.5rem;
             border-radius: 9999px;
-            background-color: #4682B4;
+            background-color: #FF8C5A;
             color: white;
             display: flex;
             align-items: center;
@@ -113,16 +113,16 @@
             contentContainer.innerHTML = `
                 <div class="prose prose-lg max-w-none mx-auto">
                     <style>
-                        .prose h1 { color: #4682B4; text-align: center; font-size: 2.5rem; margin-bottom: 2rem; }
-                        .prose h2 { color: #4682B4; text-align: center; font-size: 2rem; margin-top: 3rem; margin-bottom: 1.5rem; }
-                        .prose h3 { color: #4682B4; font-size: 1.5rem; margin-top: 2rem; }
+                        .prose h1 { color: #FF8C5A; text-align: center; font-size: 2.5rem; margin-bottom: 2rem; }
+                        .prose h2 { color: #FF8C5A; text-align: center; font-size: 2rem; margin-top: 3rem; margin-bottom: 1.5rem; }
+                        .prose h3 { color: #FF8C5A; font-size: 1.5rem; margin-top: 2rem; }
                         .prose p { color: #374151; line-height: 1.8; margin-bottom: 1.5rem; }
-                        .prose strong { color: #20B2AA; }
+                        .prose strong { color: #4ECDC4; }
                         .prose ul, .prose ol { color: #374151; }
-                        .prose blockquote { border-left-color: #4682B4; background-color: #F0F8FF; padding: 1rem; }
+                        .prose blockquote { border-left-color: #FF8C5A; background-color: #FFF4ED; padding: 1rem; }
                         .prose img { border-radius: 0.5rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
-                        .prose pre { background-color: #F3F4F6; border-radius: 0.5rem; }
-                        .prose code { background-color: #F3F4F6; padding: 0.25rem 0.5rem; border-radius: 0.25rem; }
+                        .prose pre { background-color: #FFF4ED; border-radius: 0.5rem; }
+                        .prose code { background-color: #FFF4ED; padding: 0.25rem 0.5rem; border-radius: 0.25rem; }
                     </style>
                     <div class="bg-white p-8 rounded-lg shadow-lg">
                         ${htmlContent}
@@ -164,7 +164,7 @@
                     const contentContainer = document.getElementById('content-container');
                     let html = `
                         <header class="text-center py-8 md:py-12">
-                            <h1 class="text-4xl md:text-5xl font-bold" style="color: #4682B4;">${data.header.title}</h1>
+                            <h1 class="text-4xl md:text-5xl font-bold" style="color: #FF8C5A;">${data.header.title}</h1>
                             <p class="mt-4 text-lg md:text-xl text-gray-600">${data.header.subtitle}</p>
                         </header>
                     `;
@@ -172,7 +172,7 @@
                     data.sections.forEach(section => {
                         html += `
                             <section class="mb-12 md:mb-20">
-                                ${section.title ? `<h2 class="text-2xl md:text-3xl font-bold text-center mb-8" style="color: #4682B4;">${section.title}</h2>` : ''}
+                                ${section.title ? `<h2 class="text-2xl md:text-3xl font-bold text-center mb-8" style="color: #FF8C5A;">${section.title}</h2>` : ''}
                                 <div class="bg-white p-8 rounded-lg shadow-lg">
                                     ${section.content}
                                 </div>
@@ -182,7 +182,7 @@
 
                     html += `
                         <footer class="text-center py-8 border-t border-gray-200">
-                            <p class="text-xl font-semibold" style="color: #4682B4;">${data.footer.title}</p>
+                            <p class="text-xl font-semibold" style="color: #FF8C5A;">${data.footer.title}</p>
                             <p class="mt-4 max-w-2xl mx-auto text-gray-600">${data.footer.text}</p>
                         </footer>
                     `;
