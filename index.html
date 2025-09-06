@@ -153,6 +153,16 @@
                 </div>
             </section>
 
+            <section id="used-topics" class="mb-16">
+                <div class="text-center mb-10">
+                    <h2 class="text-2xl font-bold section-title">已使用选题库</h2>
+                    <p class="mt-2 text-gray-500">已经制作成视频的选题记录</p>
+                </div>
+                <div id="used-topics-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Used topics will be displayed here -->
+                </div>
+            </section>
+
             <section id="content-directory" class="mb-16">
                 <div class="text-center mb-10">
                     <h2 class="text-2xl md:text-3xl font-bold section-title">第三部分：内容目录</h2>
@@ -262,26 +272,31 @@
     <script>
         // Define data and functions at the global scope
         const topicsData = [
-            { id: 1, pillar: '人生解惑', title: '【三木】停止精神内耗的终极答案：我在无数告别中发现的3个生活原则', details: '<strong>目标用户痛点：</strong>直接命中"高压生活者"和"存在主义焦虑者"普遍存在的"精神内耗"和"选择困难"的痛点。<br><strong>三木角色定位：</strong>塑造三木为"智者"，从终局回看，提炼出超越日常琐碎的宏观智慧。<br><strong>内容切入点与价值主张：</strong>以一个因犹豫和内耗而留下巨大遗憾的真实故事引入。然后提炼出3个可被观众立刻应用的思维模型。价值在于将殡葬师的洞察转化为观众可执行的"人生算法"。<br><strong>SEO价值：</strong>强力捕捉"精神内耗"、"如何停止胡思乱想"、"人生意义"、"活在当下"等高搜索量关键词。' },
-            { id: 2, pillar: '情绪工具', title: '如何与"正在经历悲伤"的家人/朋友交谈？（附：绝对不能说的5句话）', details: '<strong>目标用户痛点：</strong>解决了年轻人在面对他人痛苦时"想帮忙却怕说错话"的强烈社交焦虑。<br><strong>三木角色定位：</strong>强化三木作为"共情者"和"引路人"的形象，提供极其实用的社交工具。<br><strong>内容切入点与价值主张：</strong>采用"Do\'s & Don\'ts"结构。用三木见证过的"笨拙但真诚的安慰"和"造成二次伤害的言语"作对比。提供可直接使用的"话术脚本"。<br><strong>SEO价值：</strong>目标关键词"如何安慰人"、"朋友失恋了怎么安慰"、"高情商安慰"等。' },
-            { id: 3, pillar: '禁忌揭秘', title: '"身后事"极简清单：普通人需要提前为自己和家人准备什么？', details: '<strong>目标用户痛点：</strong>将一个沉重的话题转化为一个可控、可执行的"项目管理"任务，降低心理门槛。<br><strong>三木角色定位：</strong>体现三木作为"引路人"的专业性和关怀，将复杂的流程梳理成清晰、温暖的指南。<br><strong>内容切入点与价值主-张：</strong>不仅仅是罗列清单，而是解释每一项准备背后的意义——"这不是在走向死亡，而是在更好地生活"。<br><strong>SEO价值：</strong>捕捉"生前整理"、"数字遗产"、"家庭应急"等实用性极强的搜索词。' },
-            { id: 4, pillar: '人生解惑', title: '"为什么是我？"——当你感觉被生活反复捶打时，请打开这个视频', details: '<strong>目标用户痛点：</strong>针对年轻人在遭遇挫折、不公或厄运时普遍会产生的"受害者心态"和"存在主义危机"。<br><strong>三木角色定位：</strong>扮演"见证者"和"智者"，提供一个超越个人痛苦的宏大视角。<br><strong>内容切入点与价值主张：</strong>核心价值不是给出答案，而是改变提问的方式。引导观众从"为什么是我受苦？"转向"这段经历想教会我什么？"。<br><strong>SEO价值：</strong>关键词"人生低谷"、"如何走出痛苦"、"感觉不公平"、"治愈"等。' },
-            { id: 5, pillar: '情绪工具', title: '如何处理与父母在"生死观"上的巨大分歧？', details: '<strong>目标用户痛点：</strong>这是一个非常具体且普遍的代际冲突场景，年轻人希望开明地讨论，而父母可能非常忌讳。<br><strong>三木角色定位：</strong>作为"共情者"和"引路人"，他既理解年轻人的想法，也懂得老一辈的恐惧。<br><strong>内容切入点与价值主张：</strong>提供具体的沟通策略和话术，例如"不要在节假日谈"、"从关心父母的健康和愿望开始"。<br><strong>SEO价值：</strong>目标关键词"和父母沟通"、"代际冲突"、"家庭关系"、"生死教育"。' },
-            { id: 6, pillar: '人生解惑', title: '我见过最"值得"的人生，都有一个共同点', details: '<strong>目标用户痛点：</strong>回应年轻人对于"成功"和"人生价值"的迷茫，提供一个关于"何为值得"的另类答案。<br><strong>三木角色定位：</strong>"智者"形象。通过对比不同社会身份的临终状态，提炼出超越物质和名望的共同价值。<br><strong>内容切入点与价值主张：</strong>核心是打破"财富=成功"的单一叙事，为观众提供多元的价值坐标。<br><strong>SEO价值：</strong>捕捉"人生意义"、"什么是成功"、"如何活出价值"、"个人成长"等核心人生议题。' },
-            { id: 7, pillar: '禁忌揭秘', title: '宠物离世指南：我们该如何与"毛孩子"好好告别？', details: '<strong>目标用户痛点：</strong>随着养宠人群的扩大，宠物离世带来的悲伤和仪式需求日益增长，但相关指导却很缺乏。<br><strong>三木角色定位：</strong>"共情者"。将对人的关怀延伸到对动物生命的尊重上。<br><strong>内容切入点与价值主张：</strong>提供从心理调适到具体仪式的全流程指导。承认并正当化"为宠物悲伤"的情感。<br><strong>SEO价值：</strong>关键词"宠物去世怎么办"、"宠物殡葬"、"如何走出宠物离世的悲伤"。' },
-            { id: 8, pillar: '情绪工具', title: '"断舍离"终极版：如何处理逝去亲人的遗物？', details: '<strong>目标用户痛点：</strong>这是一个极其痛苦和纠结的过程，处理遗物往往会引发第二波巨大的悲伤。<br><strong>三木角色定位：</strong>"情绪疗愈师"。他能理解这种纠结，并提供兼具情感关怀和操作性的建议。<br><strong>内容切入点与价值主张：</strong>提出"分类法"：分为"保留-传承"、"赠予-分享"、"封存-告别"三类。强调这不是"丢弃"，而是"转化"记忆的形式。<br><strong>SEO价值：</strong>关键词"如何处理遗物"、"睹物思人"、"走出悲伤"。' },
-            { id: 9, pillar: '人生解惑', title: '如果你害怕"错过"，不妨听听那些"最后悔"的人说了什么', details: '<strong>目标用户痛点：</strong>针对年轻人的"FOMO"（Fear of Missing Out）心态，即对错过机会的普遍焦虑。<br><strong>三木角色定位：</strong>"见证者"。他见证了人生真正的"错过"是什么，他的话语具有终极的说服力。<br><strong>内容切入点与价值主张：</strong>揭示一个反直觉的真相：人们临终时后悔的，往往是"没能好好爱身边的人"、"没活出真实的自己"。<br><strong>SEO价值：</strong>关键词"人生遗憾"、"错过的机会"、"如何选择"、"活在当下"。' },
-            { id: 10, pillar: '禁忌揭秘', title: '立一份"情感遗嘱"：除了财产，你最想为家人留下什么？', details: '<strong>目标用户痛点：</strong>这是对"写遗嘱"这一话题的感性升级。年轻人可能没有多少财产，但他们有丰富的情感和想要表达的爱。<br><strong>三木角色定位：</strong>"引路人"。引导观众进行一次深刻的自我审视和情感梳理。<br><strong>内容切入点与价值主张：</strong>提供"情感遗嘱"的模板和引导性问题，将遗嘱从法律文件升华为爱的礼物。<br><strong>SEO价值：</strong>关键词"情感遗嘱"、"给家人的信"、"人生总结"、"如何表达爱"。' },
-            { id: 11, pillar: '情绪工具', title: '如何面对"第一次"参加葬礼的恐惧和不安？', details: '<strong>目标用户痛点：</strong>专门针对从未有过相关经历的年轻人，为他们进行一次"心理预演"，消除未知带来的恐惧。<br><strong>三木角色定位：</strong>"引路人"和"共情者"。<br><strong>内容切入点与价值主张：</strong>分步讲解全过程，重点不是礼仪，而是"心理建设"。告诉他们"感到悲伤是正常的"、"不知道说什么也是正常的"。<br><strong>SEO价值：</strong>关键词"第一次参加葬礼"、"葬礼恐惧"、"如何面对死亡"。' },
-            { id: 12, pillar: '人生解惑', title: '为什么说"好好活着"是对逝者最好的纪念？', details: '<strong>目标用户痛点：</strong>许多人在亲友离世后会陷入长期的愧疚和自我惩罚，觉得"我不配快乐"。<br><strong>三木角色定位：</strong>"情绪疗愈师"和"智者"。<br><strong>内容切入点与价值主张：</strong>核心论点是：逝者最大的遗愿，一定是希望活着的人能够幸福。将"纪念"从一种沉重的负担，转化为一种积极生活的动力。<br><strong>SEO价值：</strong>关键词"如何纪念亲人"、"走出悲伤"、"活着的意义"。' },
-            { id: 13, pillar: '禁忌揭秘', title: '临终关怀到底在做什么？（一个殡葬师的观察视角）', details: '<strong>目标用户痛点：</strong>"临终关怀"是一个大众听过但并不了解的概念，充满了误解和神秘感。<br><strong>三木角色定位：</strong>"见证者"和"职业揭秘者"。<br><strong>内容切入点与价值主张：</strong>讲述经过临终关怀的逝者与家属的状态有何不同。强调其核心是"提高生命最后一程的质量"，而非"放弃治疗"。<br><strong>SEO价值：</strong>关键词"临终关怀"、"安宁疗护"、"生命的尊严"。' },
-            { id: 14, pillar: '情绪工具', title: '如何与孩子谈论"死亡"？（分年龄段实用指南）', details: '<strong>目标用户痛点：</strong>针对年轻父母的核心育儿难题，这是一个高频、高痛点的搜索需求。<br><strong>三木角色定位：</strong>"引路人"。将他对生死的理解，转化为父母可以使用的、充满智慧的育儿工具。<br><strong>内容切入点与价值主张：</strong>提供分年龄段的沟通策略和比喻。例如，对幼儿可以用"花儿谢了"、"电池用完了"等比喻。<br><strong>SEO价值：</strong>关键词"如何和孩子谈论死亡"、"生命教育"、"儿童心理"。' },
-            { id: 15, pillar: '人生解惑', title: '从"墓碑"到"社交账号"：我们希望在世界上留下什么痕迹？', details: '<strong>目标用户痛点：</strong>这是一个非常现代的存在主义问题，引发年轻人对"数字身份"和"个人品牌"的深层思考。<br><strong>三木角色定位：</strong>"智者"。将古老的"墓志铭"概念与现代的"社交媒体"进行对比。<br><strong>内容切入点与价值主张：</strong>引导观众思考："如果我的社交账号就是我的墓志铭，我希望它呈现一个怎样的我？"。这是一个哲学探讨。<br><strong>SEO价值：</strong>关键词"数字遗产"、"社交媒体"、"个人价值"、"墓志铭"。' },
-            { id: 16, pillar: '禁忌揭秘', title: '不同文化/信仰的葬礼有何不同？（一个殡葬师的跨文化观察）', details: '<strong>目标用户痛点：</strong>满足"深度好奇者"对世界文化多样性的兴趣，同时也是一个非常实用的社交礼仪指南。<br><strong>三木角色定位：</strong>"见证者"和"职业揭秘者"。<br><strong>内容切入点与价值主张：</strong>选择2-3个有代表性的文化进行对比，讲述仪式背后的不同生死观。重点不在于猎奇，而在于展示人类面对告别的共同情感。<br><strong>SEO价值：</strong>关键词"葬礼习俗"、"跨文化交流"、"宗教仪式"。' },
-            { id: 17, pillar: '情绪工具', title: '如何原谅一个已经"无法道歉"的人？', details: '<strong>目标用户痛点：</strong>这是一个深刻的心理困境，可能是与逝去的亲人有未解的心结，或与一个永远离开自己生活的人有旧怨。<br><strong>三木角色定位：</strong>"情绪疗愈师"。<br><strong>内容切入点与价值主-张：</strong>核心观点是："原谅"不是为了对方，而是为了解放自己。提供一些心理学上的方法，如"写一封不会寄出的信"、"进行一次空椅子对话"。<br><strong>SEO价值：</strong>关键词"如何原谅"、"放下过去"、"心理创伤"、"自我和解"。' },
-            { id: 18, pillar: '人生解惑', title: '"无常"才是人生的常态：如何拥抱生活中的不确定性？', details: '<strong>目标用户痛点：</strong>针对年轻人对未来的不确定性感到的巨大焦虑，以及对"稳定"的过度渴望。<br><strong>三木角色定位：</strong>"智者"。他的整个职业都在直面"无常"。<br><strong>内容切入点与价值主张：</strong>通过故事说明，人生最大的确定性就是"不确定性"。与其对抗，不如学会与之共舞。提供心态调整的建议。<br><strong>SEO价值：</strong>关键词"不确定性"、"未来焦虑"、"如何应对变化"、"平常心"。' },
-            { id: 19, pillar: '禁忌揭秘', title: '遗体捐献/器官捐献：你需要知道的所有事', details: '<strong>目标用户痛点：</strong>这是一个高尚但信息不透明的话题。许多年轻人有此意愿，但因流程不清晰、心存疑虑而却步。<br><strong>三木角色定位：</strong>"引路人"和"职业揭秘者"。<br><strong>内容切入点与价值主张：</strong>以Q&A的形式，清晰解答核心问题。强调这是一种生命延续的方式，传递大爱。<br><strong>SEO价值：</strong>关键词"遗体捐献"、"器官捐献"、"生命延续"。' },
-            { id: 20, pillar: '情绪工具', title: '当你感到"全世界只剩下自己一个人"时', details: '<strong>目标用户痛点：</strong>直击现代社会年轻人的核心痛点——深刻的孤独感。<br><strong>三木角色定位：</strong>"共情者"和"情绪疗愈师"。<br><strong>内容切入点与价值主张：</strong>不提供廉价的建议。而是先承认孤独的普遍性和痛苦，然后分享故事，最后引向"如何与孤独共处"的智慧。<br><strong>SEO价值：</strong>关键词"孤独感"、"如何排解寂寞"、"一个人生活"、"心理健康"。' }
+            { id: 1, pillar: '人生解惑', title: '【三木】停止精神内耗的终极答案：我在无数告别中发现的3个生活原则', status: 'unused', status: 'unused', details: '<strong>目标用户痛点：</strong>直接命中"高压生活者"和"存在主义焦虑者"普遍存在的"精神内耗"和"选择困难"的痛点。<br><strong>三木角色定位：</strong>塑造三木为"智者"，从终局回看，提炼出超越日常琐碎的宏观智慧。<br><strong>内容切入点与价值主张：</strong>以一个因犹豫和内耗而留下巨大遗憾的真实故事引入。然后提炼出3个可被观众立刻应用的思维模型。价值在于将殡葬师的洞察转化为观众可执行的"人生算法"。<br><strong>SEO价值：</strong>强力捕捉"精神内耗"、"如何停止胡思乱想"、"人生意义"、"活在当下"等高搜索量关键词。' },
+            { id: 2, pillar: '情绪工具', title: '如何与"正在经历悲伤"的家人/朋友交谈？（附：绝对不能说的5句话）', status: 'unused', status: 'unused', details: '<strong>目标用户痛点：</strong>解决了年轻人在面对他人痛苦时"想帮忙却怕说错话"的强烈社交焦虑。<br><strong>三木角色定位：</strong>强化三木作为"共情者"和"引路人"的形象，提供极其实用的社交工具。<br><strong>内容切入点与价值主张：</strong>采用"Do\'s & Don\'ts"结构。用三木见证过的"笨拙但真诚的安慰"和"造成二次伤害的言语"作对比。提供可直接使用的"话术脚本"。<br><strong>SEO价值：</strong>目标关键词"如何安慰人"、"朋友失恋了怎么安慰"、"高情商安慰"等。' },
+            { id: 3, pillar: '禁忌揭秘', title: '"身后事"极简清单：普通人需要提前为自己和家人准备什么？', status: 'unused', details: '<strong>目标用户痛点：</strong>将一个沉重的话题转化为一个可控、可执行的"项目管理"任务，降低心理门槛。<br><strong>三木角色定位：</strong>体现三木作为"引路人"的专业性和关怀，将复杂的流程梳理成清晰、温暖的指南。<br><strong>内容切入点与价值主-张：</strong>不仅仅是罗列清单，而是解释每一项准备背后的意义——"这不是在走向死亡，而是在更好地生活"。<br><strong>SEO价值：</strong>捕捉"生前整理"、"数字遗产"、"家庭应急"等实用性极强的搜索词。' },
+            { id: 4, pillar: '人生解惑', title: '"为什么是我？"——当你感觉被生活反复捶打时，请打开这个视频', status: 'unused', details: '<strong>目标用户痛点：</strong>针对年轻人在遭遇挫折、不公或厄运时普遍会产生的"受害者心态"和"存在主义危机"。<br><strong>三木角色定位：</strong>扮演"见证者"和"智者"，提供一个超越个人痛苦的宏大视角。<br><strong>内容切入点与价值主张：</strong>核心价值不是给出答案，而是改变提问的方式。引导观众从"为什么是我受苦？"转向"这段经历想教会我什么？"。<br><strong>SEO价值：</strong>关键词"人生低谷"、"如何走出痛苦"、"感觉不公平"、"治愈"等。' },
+            { id: 5, pillar: '情绪工具', title: '如何处理与父母在"生死观"上的巨大分歧？', status: 'unused', details: '<strong>目标用户痛点：</strong>这是一个非常具体且普遍的代际冲突场景，年轻人希望开明地讨论，而父母可能非常忌讳。<br><strong>三木角色定位：</strong>作为"共情者"和"引路人"，他既理解年轻人的想法，也懂得老一辈的恐惧。<br><strong>内容切入点与价值主张：</strong>提供具体的沟通策略和话术，例如"不要在节假日谈"、"从关心父母的健康和愿望开始"。<br><strong>SEO价值：</strong>目标关键词"和父母沟通"、"代际冲突"、"家庭关系"、"生死教育"。' },
+            { id: 6, pillar: '人生解惑', title: '我见过最"值得"的人生，都有一个共同点', status: 'unused', details: '<strong>目标用户痛点：</strong>回应年轻人对于"成功"和"人生价值"的迷茫，提供一个关于"何为值得"的另类答案。<br><strong>三木角色定位：</strong>"智者"形象。通过对比不同社会身份的临终状态，提炼出超越物质和名望的共同价值。<br><strong>内容切入点与价值主张：</strong>核心是打破"财富=成功"的单一叙事，为观众提供多元的价值坐标。<br><strong>SEO价值：</strong>捕捉"人生意义"、"什么是成功"、"如何活出价值"、"个人成长"等核心人生议题。' },
+            { id: 7, pillar: '禁忌揭秘', title: '宠物离世指南：我们该如何与"毛孩子"好好告别？', status: 'unused', details: '<strong>目标用户痛点：</strong>随着养宠人群的扩大，宠物离世带来的悲伤和仪式需求日益增长，但相关指导却很缺乏。<br><strong>三木角色定位：</strong>"共情者"。将对人的关怀延伸到对动物生命的尊重上。<br><strong>内容切入点与价值主张：</strong>提供从心理调适到具体仪式的全流程指导。承认并正当化"为宠物悲伤"的情感。<br><strong>SEO价值：</strong>关键词"宠物去世怎么办"、"宠物殡葬"、"如何走出宠物离世的悲伤"。' },
+            { id: 8, pillar: '情绪工具', title: '"断舍离"终极版：如何处理逝去亲人的遗物？', status: 'unused', details: '<strong>目标用户痛点：</strong>这是一个极其痛苦和纠结的过程，处理遗物往往会引发第二波巨大的悲伤。<br><strong>三木角色定位：</strong>"情绪疗愈师"。他能理解这种纠结，并提供兼具情感关怀和操作性的建议。<br><strong>内容切入点与价值主张：</strong>提出"分类法"：分为"保留-传承"、"赠予-分享"、"封存-告别"三类。强调这不是"丢弃"，而是"转化"记忆的形式。<br><strong>SEO价值：</strong>关键词"如何处理遗物"、"睹物思人"、"走出悲伤"。' },
+            { id: 9, pillar: '人生解惑', title: '如果你害怕"错过"，不妨听听那些"最后悔"的人说了什么', status: 'unused', details: '<strong>目标用户痛点：</strong>针对年轻人的"FOMO"（Fear of Missing Out）心态，即对错过机会的普遍焦虑。<br><strong>三木角色定位：</strong>"见证者"。他见证了人生真正的"错过"是什么，他的话语具有终极的说服力。<br><strong>内容切入点与价值主张：</strong>揭示一个反直觉的真相：人们临终时后悔的，往往是"没能好好爱身边的人"、"没活出真实的自己"。<br><strong>SEO价值：</strong>关键词"人生遗憾"、"错过的机会"、"如何选择"、"活在当下"。' },
+            { id: 10, pillar: '禁忌揭秘', title: '立一份"情感遗嘱"：除了财产，你最想为家人留下什么？', status: 'unused', details: '<strong>目标用户痛点：</strong>这是对"写遗嘱"这一话题的感性升级。年轻人可能没有多少财产，但他们有丰富的情感和想要表达的爱。<br><strong>三木角色定位：</strong>"引路人"。引导观众进行一次深刻的自我审视和情感梳理。<br><strong>内容切入点与价值主张：</strong>提供"情感遗嘱"的模板和引导性问题，将遗嘱从法律文件升华为爱的礼物。<br><strong>SEO价值：</strong>关键词"情感遗嘱"、"给家人的信"、"人生总结"、"如何表达爱"。' },
+            { id: 11, pillar: '情绪工具', title: '如何面对"第一次"参加葬礼的恐惧和不安？', status: 'unused', details: '<strong>目标用户痛点：</strong>专门针对从未有过相关经历的年轻人，为他们进行一次"心理预演"，消除未知带来的恐惧。<br><strong>三木角色定位：</strong>"引路人"和"共情者"。<br><strong>内容切入点与价值主张：</strong>分步讲解全过程，重点不是礼仪，而是"心理建设"。告诉他们"感到悲伤是正常的"、"不知道说什么也是正常的"。<br><strong>SEO价值：</strong>关键词"第一次参加葬礼"、"葬礼恐惧"、"如何面对死亡"。' },
+            { id: 12, pillar: '人生解惑', title: '为什么说"好好活着"是对逝者最好的纪念？', status: 'unused', details: '<strong>目标用户痛点：</strong>许多人在亲友离世后会陷入长期的愧疚和自我惩罚，觉得"我不配快乐"。<br><strong>三木角色定位：</strong>"情绪疗愈师"和"智者"。<br><strong>内容切入点与价值主张：</strong>核心论点是：逝者最大的遗愿，一定是希望活着的人能够幸福。将"纪念"从一种沉重的负担，转化为一种积极生活的动力。<br><strong>SEO价值：</strong>关键词"如何纪念亲人"、"走出悲伤"、"活着的意义"。' },
+            { id: 13, pillar: '禁忌揭秘', title: '临终关怀到底在做什么？（一个殡葬师的观察视角）', status: 'unused', details: '<strong>目标用户痛点：</strong>"临终关怀"是一个大众听过但并不了解的概念，充满了误解和神秘感。<br><strong>三木角色定位：</strong>"见证者"和"职业揭秘者"。<br><strong>内容切入点与价值主张：</strong>讲述经过临终关怀的逝者与家属的状态有何不同。强调其核心是"提高生命最后一程的质量"，而非"放弃治疗"。<br><strong>SEO价值：</strong>关键词"临终关怀"、"安宁疗护"、"生命的尊严"。' },
+            { id: 14, pillar: '情绪工具', title: '如何与孩子谈论"死亡"？（分年龄段实用指南）', status: 'unused', details: '<strong>目标用户痛点：</strong>针对年轻父母的核心育儿难题，这是一个高频、高痛点的搜索需求。<br><strong>三木角色定位：</strong>"引路人"。将他对生死的理解，转化为父母可以使用的、充满智慧的育儿工具。<br><strong>内容切入点与价值主张：</strong>提供分年龄段的沟通策略和比喻。例如，对幼儿可以用"花儿谢了"、"电池用完了"等比喻。<br><strong>SEO价值：</strong>关键词"如何和孩子谈论死亡"、"生命教育"、"儿童心理"。' },
+            { id: 15, pillar: '人生解惑', title: '从"墓碑"到"社交账号"：我们希望在世界上留下什么痕迹？', status: 'unused', details: '<strong>目标用户痛点：</strong>这是一个非常现代的存在主义问题，引发年轻人对"数字身份"和"个人品牌"的深层思考。<br><strong>三木角色定位：</strong>"智者"。将古老的"墓志铭"概念与现代的"社交媒体"进行对比。<br><strong>内容切入点与价值主张：</strong>引导观众思考："如果我的社交账号就是我的墓志铭，我希望它呈现一个怎样的我？"。这是一个哲学探讨。<br><strong>SEO价值：</strong>关键词"数字遗产"、"社交媒体"、"个人价值"、"墓志铭"。' },
+            { id: 16, pillar: '禁忌揭秘', title: '不同文化/信仰的葬礼有何不同？（一个殡葬师的跨文化观察）', status: 'unused', details: '<strong>目标用户痛点：</strong>满足"深度好奇者"对世界文化多样性的兴趣，同时也是一个非常实用的社交礼仪指南。<br><strong>三木角色定位：</strong>"见证者"和"职业揭秘者"。<br><strong>内容切入点与价值主张：</strong>选择2-3个有代表性的文化进行对比，讲述仪式背后的不同生死观。重点不在于猎奇，而在于展示人类面对告别的共同情感。<br><strong>SEO价值：</strong>关键词"葬礼习俗"、"跨文化交流"、"宗教仪式"。' },
+            { id: 17, pillar: '情绪工具', title: '如何原谅一个已经"无法道歉"的人？', status: 'unused', details: '<strong>目标用户痛点：</strong>这是一个深刻的心理困境，可能是与逝去的亲人有未解的心结，或与一个永远离开自己生活的人有旧怨。<br><strong>三木角色定位：</strong>"情绪疗愈师"。<br><strong>内容切入点与价值主-张：</strong>核心观点是："原谅"不是为了对方，而是为了解放自己。提供一些心理学上的方法，如"写一封不会寄出的信"、"进行一次空椅子对话"。<br><strong>SEO价值：</strong>关键词"如何原谅"、"放下过去"、"心理创伤"、"自我和解"。' },
+            { id: 18, pillar: '人生解惑', title: '"无常"才是人生的常态：如何拥抱生活中的不确定性？', status: 'unused', details: '<strong>目标用户痛点：</strong>针对年轻人对未来的不确定性感到的巨大焦虑，以及对"稳定"的过度渴望。<br><strong>三木角色定位：</strong>"智者"。他的整个职业都在直面"无常"。<br><strong>内容切入点与价值主张：</strong>通过故事说明，人生最大的确定性就是"不确定性"。与其对抗，不如学会与之共舞。提供心态调整的建议。<br><strong>SEO价值：</strong>关键词"不确定性"、"未来焦虑"、"如何应对变化"、"平常心"。' },
+            { id: 19, pillar: '禁忌揭秘', title: '遗体捐献/器官捐献：你需要知道的所有事', status: 'unused', details: '<strong>目标用户痛点：</strong>这是一个高尚但信息不透明的话题。许多年轻人有此意愿，但因流程不清晰、心存疑虑而却步。<br><strong>三木角色定位：</strong>"引路人"和"职业揭秘者"。<br><strong>内容切入点与价值主张：</strong>以Q&A的形式，清晰解答核心问题。强调这是一种生命延续的方式，传递大爱。<br><strong>SEO价值：</strong>关键词"遗体捐献"、"器官捐献"、"生命延续"。' },
+            { id: 20, pillar: '情绪工具', title: '当你感到"全世界只剩下自己一个人"时', status: 'unused', status: 'unused', details: '<strong>目标用户痛点：</strong>直击现代社会年轻人的核心痛点——深刻的孤独感。<br><strong>三木角色定位：</strong>"共情者"和"情绪疗愈师"。<br><strong>内容切入点与价值主张：</strong>不提供廉价的建议。而是先承认孤独的普遍性和痛苦，然后分享故事，最后引向"如何与孤独共处"的智慧。<br><strong>SEO价值：</strong>关键词"孤独感"、"如何排解寂寞"、"一个人生活"、"心理健康"。' },
+            { id: 21, pillar: '实用指南', title: '亲人离世后的24小时：你需要立刻做的7件事', status: 'unused', status: 'unused', details: '<strong>目标用户痛点：</strong>亲人突然离世所带来的巨大冲击和混乱感，对于关键的第一步（如获取死亡证明、通知机构等）完全不知所措。<br><strong>三木角色定位：</strong><strong>引路人</strong>。在观众最悲痛和无助的时刻，提供一份冷静、专业、可执行的行动清单，成为他们可以信赖的向导。<br><strong>内容切入点与价值主张：</strong>将一个极其情绪化和混乱的危机时刻，转化为一个清晰、有序的流程。这份"急救"指南提供的不仅是信息，更是一种稳定感和掌控感，能瞬间建立观众对频道的深度信任。<br><strong>SEO价值：</strong><strong>核心关键词：</strong> 亲人去世后怎么办、身后事流程、死亡证明、后事处理。' },
+            { id: 22, pillar: '实用指南', title: '"数字遗产"清理指南：如何处理逝者的社交媒体和虚拟财产？', status: 'unused', status: 'unused', details: '<strong>目标用户痛点：</strong>这是一个非常现代但又极易被忽略的难题。不知道如何处理逝者的数字痕迹，可能导致隐私风险、情感困扰甚至财产损失（如加密货币）。<br><strong>三木角色定位：</strong><strong>引路人</strong> + <strong>智者</strong>。展现出对现代社会问题的深刻洞察力，引导观众进行前瞻性的规划。<br><strong>内容切入点与价值主张：</strong>提供一份极其前沿且实用的操作清单，解决一个很多人"不知道自己不知道"的问题。内容不仅帮助处理已故亲人的数字遗产，更能促使观众反思并提前规划自己的数字身后事。<br><strong>SEO价值：</strong><strong>核心关键词：</strong> 数字遗产、Digital Legacy、社交媒体账号处理、虚拟财产、个人成长。' },
+            { id: 23, pillar: '实用指南', title: '被忽略的福利：亲人离世后，你可以从加拿大政府领取的3笔钱', status: 'unused', status: 'unused', details: '<strong>目标用户痛点：</strong>悲痛中的家庭往往不知道有权申请相关的政府福利（如CPP死亡福利金），在承受情感打击的同时，还可能面临不必要的经济压力。<br><strong>三木角色定位：</strong><strong>引路人</strong>。作为一个信息提供者，为观众带来直接、实在的帮助。<br><strong>内容切入点与价值主张：</strong>纯粹的、高价值的信息服务。这份指南能直接为观众家庭带来经济上的帮助，是建立频道"可靠"、"有用"形象的最快方式，能有效提升观众的分享意愿。<br><strong>SEO价值：</strong><strong>核心关键词：</strong> CPP Death Benefit、Survivor\'s Pension Canada、加拿大身后福利、丧葬补助。' },
+            { id: 24, pillar: '实用指南', title: '跨境身后事指南：当意外发生在海外，家人该怎么办？', status: 'unused', status: 'unused', details: '<strong>目标用户痛点：</strong>这是第一代移民群体最独特、也最恐惧的痛点之一。面对复杂的跨国法律、文件和运输流程，家人的去世可能会演变成一场巨大的后勤和法律梦魇。<br><strong>三木角色定位：</strong><strong>引路人</strong>。作为熟悉本地和华人社区情况的专家，为这个极其复杂的难题提供导航。<br><strong>内容切入点与价值主张：</strong>解决核心目标观众的"特有问题"，深度绑定频道与这一群体的关系。通过提供清晰的流程图和避坑指南，将频道打造成北美华人社区在生命议题上不可或缺的资源。<br><strong>SEO价值：</strong><strong>核心关键词：</strong> 海外去世、骨灰回国、领事保护、跨国继承、第一代移民。' },
+            { id: 25, pillar: '实用指南', title: '在温哥华，办一场体面的告别究竟要花多少钱？', status: 'unused', status: 'unused', details: '<strong>目标用户痛点：</strong>"钱"是所有人最关心但又最不好意思问的问题。在悲伤的时刻，人们害怕因为不了解行情而被动消费，增加了额外的心理和经济负担。<br><strong>三木角色定位：</strong><strong>见证者</strong> + <strong>引路人</strong>。利用自己的职业身份，为观众揭开行业"不能说的秘密"，展现极大的真诚和权威性。<br><strong>内容切入点与价值主张：</strong>以绝对透明、坦诚的态度，将殡葬服务的所有费用（从殡仪馆到墓地）进行全解析。这种"行业揭秘"式的价值主张，能瞬间破除信息壁垒，建立观众的深度信任。<br><strong>SEO价值：</strong><strong>核心关键词：</strong> 葬礼费用、温哥华葬礼、火葬费用、墓地价格、Funeral Cost Vancouver。' }
         ];
 
         const contentLibraryData = [
@@ -314,7 +329,7 @@
 
             function renderTopics(filter = 'all') {
                 topicGrid.innerHTML = '';
-                const filteredTopics = filter === 'all' ? topicsData : topicsData.filter(t => t.pillar === filter);
+                const filteredTopics = filter === 'all' ? topicsData.filter(t => t.status !== 'used') : topicsData.filter(t => t.pillar === filter && t.status !== 'used');
                 
                 filteredTopics.forEach(topic => {
                     const card = document.createElement('div');
@@ -326,13 +341,38 @@
                         case '人生解惑': pillarColorClass = 'text-teal-600'; break;
                         case '情绪工具': pillarColorClass = 'text-orange-600'; break;
                         case '禁忌揭秘': pillarColorClass = 'text-amber-600'; break;
+                        case '实用指南': pillarColorClass = 'text-purple-600'; break;
                     }
 
                     card.innerHTML = `
-                        <div class="flex justify-between items-start">
+                        <div class="flex justify-between items-start mb-2">
                             <h4 class="font-bold text-md flex-1 pr-2">${topic.title}</h4>
-                            <span class="text-xs font-semibold ${pillarColorClass} bg-opacity-20 bg-${pillarColorClass.split('-')[1]}-100 py-1 px-2 rounded-full">${topic.pillar}</span>
+                            <div class="flex items-center gap-2">
+                                <span class="text-xs font-semibold ${pillarColorClass} bg-opacity-20 bg-${pillarColorClass.split('-')[1]}-100 py-1 px-2 rounded-full">${topic.pillar}</span>
+                                <div class="relative">
+                                    <button class="topic-menu-btn text-gray-400 hover:text-gray-600 p-1" data-topic-id="${topic.id}">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <circle cx="12" cy="5" r="1"></circle>
+                                            <circle cx="12" cy="12" r="1"></circle>
+                                            <circle cx="12" cy="19" r="1"></circle>
+                                        </svg>
+                                    </button>
+                                    <div class="topic-menu absolute right-0 top-6 bg-white border border-gray-200 rounded-lg shadow-lg p-1 z-10 hidden" data-menu-id="${topic.id}">
+                                        <button class="topic-status-btn flex items-center justify-center w-8 h-8 hover:bg-gray-100 rounded" data-topic-id="${topic.id}" data-status="used" title="标记为已使用">
+                                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-green-600">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path>
+                                            </svg>
+                                        </button>
+                                        <button class="topic-status-btn flex items-center justify-center w-8 h-8 hover:bg-gray-100 rounded" data-topic-id="${topic.id}" data-status="unused" title="标记为未使用">
+                                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-gray-600">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
+                        ${topic.status === 'used' ? '<div class="text-xs text-green-600 mb-2">✓ 已使用</div>' : ''}
                         <div class="topic-card-details mt-4 pt-4 border-t border-gray-100 text-sm text-gray-600 leading-relaxed">
                             <p>${topic.details}</p>
                         </div>
@@ -437,8 +477,121 @@
                 });
             }
 
+            // 渲染已使用的选题
+            function renderUsedTopics() {
+                const usedTopicsGrid = document.getElementById('used-topics-grid');
+                const usedTopics = topicsData.filter(t => t.status === 'used');
+                
+                usedTopicsGrid.innerHTML = '';
+                
+                if (usedTopics.length === 0) {
+                    usedTopicsGrid.innerHTML = '<p class="text-center text-gray-500 col-span-full">暂无已使用的选题</p>';
+                    return;
+                }
+                
+                usedTopics.forEach(topic => {
+                    const card = document.createElement('div');
+                    card.className = 'topic-card bg-gray-50 p-5 rounded-2xl shadow-sm cursor-pointer transition-all duration-300';
+                    card.dataset.pillar = topic.pillar;
+                    
+                    let pillarColorClass = '';
+                    switch (topic.pillar) {
+                        case '人生解惑': pillarColorClass = 'text-teal-600'; break;
+                        case '情绪工具': pillarColorClass = 'text-orange-600'; break;
+                        case '禁忌揭秘': pillarColorClass = 'text-amber-600'; break;
+                        case '实用指南': pillarColorClass = 'text-purple-600'; break;
+                    }
+                    
+                    card.innerHTML = `
+                        <div class="flex justify-between items-start mb-2">
+                            <h4 class="font-bold text-md flex-1 pr-2">${topic.title}</h4>
+                            <div class="flex items-center gap-2">
+                                <span class="text-xs font-semibold ${pillarColorClass} bg-opacity-20 bg-${pillarColorClass.split('-')[1]}-100 py-1 px-2 rounded-full">${topic.pillar}</span>
+                                <div class="relative">
+                                    <button class="topic-menu-btn text-gray-400 hover:text-gray-600 p-1" data-topic-id="${topic.id}">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <circle cx="12" cy="5" r="1"></circle>
+                                            <circle cx="12" cy="12" r="1"></circle>
+                                            <circle cx="12" cy="19" r="1"></circle>
+                                        </svg>
+                                    </button>
+                                    <div class="topic-menu absolute right-0 top-6 bg-white border border-gray-200 rounded-lg shadow-lg p-1 z-10 hidden" data-menu-id="${topic.id}">
+                                        <button class="topic-status-btn flex items-center justify-center w-8 h-8 hover:bg-gray-100 rounded" data-topic-id="${topic.id}" data-status="used" title="标记为已使用">
+                                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-green-600">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path>
+                                            </svg>
+                                        </button>
+                                        <button class="topic-status-btn flex items-center justify-center w-8 h-8 hover:bg-gray-100 rounded" data-topic-id="${topic.id}" data-status="unused" title="标记为未使用">
+                                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-gray-600">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-xs text-green-600 mb-2">✓ 已使用</div>
+                        <div class="topic-card-details mt-4 pt-4 border-t border-gray-100 text-sm text-gray-600 leading-relaxed">
+                            <p>${topic.details}</p>
+                        </div>
+                    `;
+                    
+                    card.addEventListener('click', () => {
+                        card.classList.toggle('open');
+                    });
+                    
+                    usedTopicsGrid.appendChild(card);
+                });
+            }
+            
+            // 处理选题状态菜单
+            document.addEventListener('click', function(e) {
+                // 处理菜单按钮点击
+                if (e.target.closest('.topic-menu-btn')) {
+                    e.stopPropagation();
+                    const btn = e.target.closest('.topic-menu-btn');
+                    const topicId = btn.dataset.topicId;
+                    const menu = document.querySelector(`[data-menu-id="${topicId}"]`);
+                    
+                    // 关闭其他菜单
+                    document.querySelectorAll('.topic-menu').forEach(m => {
+                        if (m !== menu) m.classList.add('hidden');
+                    });
+                    
+                    // 切换当前菜单
+                    menu.classList.toggle('hidden');
+                }
+                
+                // 处理状态按钮点击
+                if (e.target.closest('.topic-status-btn')) {
+                    e.stopPropagation();
+                    const btn = e.target.closest('.topic-status-btn');
+                    const topicId = parseInt(btn.dataset.topicId);
+                    const newStatus = btn.dataset.status;
+                    
+                    // 更新选题状态
+                    const topic = topicsData.find(t => t.id === topicId);
+                    if (topic) {
+                        topic.status = newStatus;
+                        
+                        // 重新渲染
+                        renderTopics();
+                        renderUsedTopics();
+                        
+                        // 关闭菜单
+                        document.querySelectorAll('.topic-menu').forEach(m => m.classList.add('hidden'));
+                    }
+                }
+                
+                // 点击其他地方关闭菜单
+                if (!e.target.closest('.topic-menu-btn') && !e.target.closest('.topic-menu')) {
+                    document.querySelectorAll('.topic-menu').forEach(m => m.classList.add('hidden'));
+                }
+            });
+
             renderTopics();
             renderLibrary();
+            renderUsedTopics();
             renderChart();
             
             // Add Article functionality
