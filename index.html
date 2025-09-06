@@ -271,6 +271,30 @@
 
     <script>
         // Define data and functions at the global scope
+        
+        // 从 localStorage 加载保存的状态
+        function loadTopicStatuses() {
+            const savedStatuses = localStorage.getItem('topicStatuses');
+            if (savedStatuses) {
+                try {
+                    return JSON.parse(savedStatuses);
+                } catch (e) {
+                    console.error('Failed to parse saved statuses:', e);
+                    return {};
+                }
+            }
+            return {};
+        }
+        
+        // 保存状态到 localStorage
+        function saveTopicStatuses() {
+            const statuses = {};
+            topicsData.forEach(topic => {
+                statuses[topic.id] = topic.status;
+            });
+            localStorage.setItem('topicStatuses', JSON.stringify(statuses));
+        }
+        
         const topicsData = [
             { id: 1, pillar: '人生解惑', title: '【三木】停止精神内耗的终极答案：我在无数告别中发现的3个生活原则', status: 'unused', status: 'unused', details: '<strong>目标用户痛点：</strong>直接命中"高压生活者"和"存在主义焦虑者"普遍存在的"精神内耗"和"选择困难"的痛点。<br><strong>三木角色定位：</strong>塑造三木为"智者"，从终局回看，提炼出超越日常琐碎的宏观智慧。<br><strong>内容切入点与价值主张：</strong>以一个因犹豫和内耗而留下巨大遗憾的真实故事引入。然后提炼出3个可被观众立刻应用的思维模型。价值在于将殡葬师的洞察转化为观众可执行的"人生算法"。<br><strong>SEO价值：</strong>强力捕捉"精神内耗"、"如何停止胡思乱想"、"人生意义"、"活在当下"等高搜索量关键词。' },
             { id: 2, pillar: '情绪工具', title: '如何与"正在经历悲伤"的家人/朋友交谈？（附：绝对不能说的5句话）', status: 'unused', status: 'unused', details: '<strong>目标用户痛点：</strong>解决了年轻人在面对他人痛苦时"想帮忙却怕说错话"的强烈社交焦虑。<br><strong>三木角色定位：</strong>强化三木作为"共情者"和"引路人"的形象，提供极其实用的社交工具。<br><strong>内容切入点与价值主张：</strong>采用"Do\'s & Don\'ts"结构。用三木见证过的"笨拙但真诚的安慰"和"造成二次伤害的言语"作对比。提供可直接使用的"话术脚本"。<br><strong>SEO价值：</strong>目标关键词"如何安慰人"、"朋友失恋了怎么安慰"、"高情商安慰"等。' },
@@ -298,6 +322,14 @@
             { id: 24, pillar: '实用指南', title: '跨境身后事指南：当意外发生在海外，家人该怎么办？', status: 'unused', status: 'unused', details: '<strong>目标用户痛点：</strong>这是第一代移民群体最独特、也最恐惧的痛点之一。面对复杂的跨国法律、文件和运输流程，家人的去世可能会演变成一场巨大的后勤和法律梦魇。<br><strong>三木角色定位：</strong><strong>引路人</strong>。作为熟悉本地和华人社区情况的专家，为这个极其复杂的难题提供导航。<br><strong>内容切入点与价值主张：</strong>解决核心目标观众的"特有问题"，深度绑定频道与这一群体的关系。通过提供清晰的流程图和避坑指南，将频道打造成北美华人社区在生命议题上不可或缺的资源。<br><strong>SEO价值：</strong><strong>核心关键词：</strong> 海外去世、骨灰回国、领事保护、跨国继承、第一代移民。' },
             { id: 25, pillar: '实用指南', title: '在温哥华，办一场体面的告别究竟要花多少钱？', status: 'unused', status: 'unused', details: '<strong>目标用户痛点：</strong>"钱"是所有人最关心但又最不好意思问的问题。在悲伤的时刻，人们害怕因为不了解行情而被动消费，增加了额外的心理和经济负担。<br><strong>三木角色定位：</strong><strong>见证者</strong> + <strong>引路人</strong>。利用自己的职业身份，为观众揭开行业"不能说的秘密"，展现极大的真诚和权威性。<br><strong>内容切入点与价值主张：</strong>以绝对透明、坦诚的态度，将殡葬服务的所有费用（从殡仪馆到墓地）进行全解析。这种"行业揭秘"式的价值主张，能瞬间破除信息壁垒，建立观众的深度信任。<br><strong>SEO价值：</strong><strong>核心关键词：</strong> 葬礼费用、温哥华葬礼、火葬费用、墓地价格、Funeral Cost Vancouver。' }
         ];
+        
+        // 初始化时加载保存的状态
+        const savedStatuses = loadTopicStatuses();
+        topicsData.forEach(topic => {
+            if (savedStatuses[topic.id] !== undefined) {
+                topic.status = savedStatuses[topic.id];
+            }
+        });
 
         const contentLibraryData = [
             {
@@ -573,6 +605,9 @@
                     const topic = topicsData.find(t => t.id === topicId);
                     if (topic) {
                         topic.status = newStatus;
+                        
+                        // 保存状态到 localStorage
+                        saveTopicStatuses();
                         
                         // 重新渲染
                         renderTopics();

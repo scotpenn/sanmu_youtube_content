@@ -60,6 +60,38 @@ npm start      # Uses serve .
 - `/api/auth.js` - Password authentication (uses `LOGIN_PASSWORD` env var)
 - `/api/config.js` - Returns environment configuration
 
+## Topic Management System
+
+### Interactive Status Management
+- Each topic card includes a three-dot menu with icon-based actions
+- Topics can be marked as "used" (✓ green checkmark) or "unused" (✗ gray X)
+- Used topics automatically move to dedicated "已使用选题库" section
+- Status changes are handled via event delegation for performance
+
+### Topic Categories and Structure
+**Current Categories:**
+- 人生解惑 (Life Guidance) - Teal color
+- 情绪工具 (Emotional Tools) - Orange color  
+- 禁忌揭秘 (Taboo Revelations) - Amber color
+- 实用指南 (Practical Guides) - Purple color
+
+**Topic Data Structure:**
+```javascript
+{
+    id: number,
+    pillar: string, // Category name
+    title: string, // Topic title
+    status: 'used' | 'unused', // Management state
+    details: string // HTML content with strategy details
+}
+```
+
+### Adding New Topics
+1. Add topic object to `topicsData` array in `index.html`
+2. Include all required fields (id, pillar, title, status, details)
+3. Topics default to 'unused' status
+4. Use existing pillar names for consistent color coding
+
 ## Key Implementation Details
 
 - All UI text and content in Chinese (zh-CN)
@@ -68,3 +100,4 @@ npm start      # Uses serve .
 - Password protection via serverless function
 - Responsive design with mobile support
 - No build process - pure static site with client-side rendering
+- Interactive topic management with persistent state handling
