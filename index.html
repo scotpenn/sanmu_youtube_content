@@ -163,6 +163,16 @@
                 </div>
             </section>
 
+            <section id="eliminated-topics" class="mb-16">
+                <div class="text-center mb-10">
+                    <h2 class="text-2xl font-bold section-title">已淘汰选题库</h2>
+                    <p class="mt-2 text-gray-500">已决定不再使用的选题</p>
+                </div>
+                <div id="eliminated-topics-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Eliminated topics will be displayed here -->
+                </div>
+            </section>
+
             <section id="content-directory" class="mb-16">
                 <div class="text-center mb-10">
                     <h2 class="text-2xl md:text-3xl font-bold section-title">第三部分：内容目录</h2>
@@ -379,7 +389,7 @@
 
             function renderTopics(filter = 'all') {
                 topicGrid.innerHTML = '';
-                const filteredTopics = filter === 'all' ? topicsData.filter(t => t.status !== 'used') : topicsData.filter(t => t.pillar === filter && t.status !== 'used');
+                const filteredTopics = filter === 'all' ? topicsData.filter(t => t.status !== 'used' && t.status !== 'eliminated') : topicsData.filter(t => t.pillar === filter && t.status !== 'used' && t.status !== 'eliminated');
                 
                 filteredTopics.forEach(topic => {
                     const card = document.createElement('div');
@@ -411,6 +421,11 @@
                                         <button class="topic-status-btn flex items-center justify-center w-8 h-8 hover:bg-gray-100 rounded" data-topic-id="${topic.id}" data-status="used" title="标记为已使用">
                                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-green-600">
                                                 <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path>
+                                            </svg>
+                                        </button>
+                                        <button class="topic-status-btn flex items-center justify-center w-8 h-8 hover:bg-gray-100 rounded" data-topic-id="${topic.id}" data-status="eliminated" title="标记为已淘汰">
+                                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-red-600">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
                                             </svg>
                                         </button>
                                         <button class="topic-status-btn flex items-center justify-center w-8 h-8 hover:bg-gray-100 rounded" data-topic-id="${topic.id}" data-status="unused" title="标记为未使用">
@@ -571,6 +586,11 @@
                                                 <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path>
                                             </svg>
                                         </button>
+                                        <button class="topic-status-btn flex items-center justify-center w-8 h-8 hover:bg-gray-100 rounded" data-topic-id="${topic.id}" data-status="eliminated" title="标记为已淘汰">
+                                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-red-600">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                            </svg>
+                                        </button>
                                         <button class="topic-status-btn flex items-center justify-center w-8 h-8 hover:bg-gray-100 rounded" data-topic-id="${topic.id}" data-status="unused" title="标记为未使用">
                                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-gray-600">
                                                 <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
@@ -593,7 +613,79 @@
                     usedTopicsGrid.appendChild(card);
                 });
             }
-            
+
+            // 渲染已淘汰的选题
+            function renderEliminatedTopics() {
+                const eliminatedTopicsGrid = document.getElementById('eliminated-topics-grid');
+                const eliminatedTopics = topicsData.filter(t => t.status === 'eliminated');
+
+                eliminatedTopicsGrid.innerHTML = '';
+
+                if (eliminatedTopics.length === 0) {
+                    eliminatedTopicsGrid.innerHTML = '<p class="text-center text-gray-500 col-span-full">暂无已淘汰的选题</p>';
+                    return;
+                }
+
+                eliminatedTopics.forEach(topic => {
+                    const card = document.createElement('div');
+                    card.className = 'topic-card bg-red-50 p-5 rounded-2xl shadow-sm cursor-pointer transition-all duration-300 opacity-75';
+                    card.dataset.pillar = topic.pillar;
+
+                    let pillarColorClass = '';
+                    switch (topic.pillar) {
+                        case '人生解惑': pillarColorClass = 'text-teal-600'; break;
+                        case '情绪工具': pillarColorClass = 'text-orange-600'; break;
+                        case '禁忌揭秘': pillarColorClass = 'text-amber-600'; break;
+                        case '实用指南': pillarColorClass = 'text-purple-600'; break;
+                    }
+
+                    card.innerHTML = `
+                        <div class="flex justify-between items-start mb-2">
+                            <h4 class="font-bold text-md flex-1 pr-2">${topic.title}</h4>
+                            <div class="flex items-center gap-2">
+                                <span class="text-xs font-semibold ${pillarColorClass} bg-opacity-20 bg-${pillarColorClass.split('-')[1]}-100 py-1 px-2 rounded-full">${topic.pillar}</span>
+                                <div class="relative">
+                                    <button class="topic-menu-btn text-gray-400 hover:text-gray-600 p-1" data-topic-id="${topic.id}">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <circle cx="12" cy="5" r="1"></circle>
+                                            <circle cx="12" cy="12" r="1"></circle>
+                                            <circle cx="12" cy="19" r="1"></circle>
+                                        </svg>
+                                    </button>
+                                    <div class="topic-menu absolute right-0 top-6 bg-white border border-gray-200 rounded-lg shadow-lg p-1 z-10 hidden" data-menu-id="${topic.id}">
+                                        <button class="topic-status-btn flex items-center justify-center w-8 h-8 hover:bg-gray-100 rounded" data-topic-id="${topic.id}" data-status="used" title="标记为已使用">
+                                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-green-600">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"></path>
+                                            </svg>
+                                        </button>
+                                        <button class="topic-status-btn flex items-center justify-center w-8 h-8 hover:bg-gray-100 rounded" data-topic-id="${topic.id}" data-status="eliminated" title="标记为已淘汰">
+                                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-red-600">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                            </svg>
+                                        </button>
+                                        <button class="topic-status-btn flex items-center justify-center w-8 h-8 hover:bg-gray-100 rounded" data-topic-id="${topic.id}" data-status="unused" title="标记为未使用">
+                                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-gray-600">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-xs text-red-600 mb-2">✗ 已淘汰</div>
+                        <div class="topic-card-details mt-4 pt-4 border-t border-gray-100 text-sm text-gray-600 leading-relaxed">
+                            <p>${topic.details}</p>
+                        </div>
+                    `;
+
+                    card.addEventListener('click', () => {
+                        card.classList.toggle('open');
+                    });
+
+                    eliminatedTopicsGrid.appendChild(card);
+                });
+            }
+
             // 处理选题状态菜单
             document.addEventListener('click', function(e) {
                 // 处理菜单按钮点击
@@ -623,14 +715,15 @@
                     const topic = topicsData.find(t => t.id === topicId);
                     if (topic) {
                         topic.status = newStatus;
-                        
+
                         // 保存状态到 localStorage
                         saveTopicStatuses();
-                        
+
                         // 重新渲染
                         renderTopics();
                         renderUsedTopics();
-                        
+                        renderEliminatedTopics();
+
                         // 关闭菜单
                         document.querySelectorAll('.topic-menu').forEach(m => m.classList.add('hidden'));
                     }
@@ -645,6 +738,7 @@
             renderTopics();
             renderLibrary();
             renderUsedTopics();
+            renderEliminatedTopics();
             renderChart();
             
             // Add Article functionality
